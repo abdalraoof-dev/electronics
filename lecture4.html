@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحاضرة 4 — المرشحات والمحددات ومضاعفات الجهد | CTS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+  --bg:#0D1117; --card:#161B22; --border:#2D3440;
+  --blue:#2563EB; --amber:#E8A000; --white:#E2E8F0; --muted:#8B96A5;
+  --green:#22c55e; --red:#ef4444;
+}
+*{box-sizing:border-box}
+html,body{margin:0; padding:0}
+body{background:var(--bg); color:var(--white); font-family:'Tajawal','Segoe UI',sans-serif; line-height:1.9; padding-bottom:70px}
+.en, .mono{font-family:'JetBrains Mono',monospace; color:#93c5fd; direction:ltr}
+.top-header{position:sticky; top:0; z-index:100; background:linear-gradient(135deg,#12213f,#0D1117); border-bottom:1px solid var(--blue); padding:14px 16px 0; text-align:center}
+.top-header h1{color:var(--amber); margin:0 0 3px; font-size:1.08rem}
+.top-header p{color:var(--muted); margin:0 0 12px; font-size:.75rem}
+.tabs{display:flex; gap:6px; overflow-x:auto; padding:0 10px 10px; scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto; background:var(--card); color:var(--muted); border:1px solid var(--border); border-radius:20px; padding:8px 16px; font-family:'Tajawal'; font-size:.85rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:.2s}
+.tab-btn.active{background:var(--blue); color:#fff; border-color:var(--blue)}
+.content-wrap{padding:16px 14px 10px; max-width:600px; margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+h2{color:var(--blue); font-size:1.06rem; border-right:4px solid var(--amber); padding-right:10px; margin-top:28px; margin-bottom:10px}
+h3{color:var(--amber); font-size:.97rem; margin-top:18px; margin-bottom:8px}
+.card{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px}
+ul{margin:8px 0; padding-right:20px}
+li{margin-bottom:6px}
+.key{color:var(--amber); font-weight:700}
+.formula{background:#0A0E14; border:1px dashed var(--blue); border-radius:8px; padding:10px 14px; text-align:center; font-family:'JetBrains Mono',monospace; color:#93c5fd; margin:10px 0; font-size:.92rem; direction:ltr}
+table{width:100%; border-collapse:collapse; margin:10px 0; font-size:.85rem}
+th,td{border:1px solid var(--border); padding:7px 8px; text-align:center}
+th{background:#1c2532; color:var(--amber)}
+.note{background:#1c1508; border-right:4px solid var(--amber); border-radius:8px; padding:10px 14px; margin:12px 0; font-size:.87rem}
+.imp{background:#0e1c2b; border-right:4px solid var(--blue); border-radius:8px; padding:10px 14px; margin:12px 0; font-size:.87rem}
+.compare-grid{display:flex; flex-direction:column; gap:10px}
+.compare-item{background:#0f1420; border-radius:10px; padding:10px 14px; border:1px solid var(--border)}
+.compare-item .title{color:var(--amber); font-weight:700; margin-bottom:4px}
+.section-hero{text-align:center; padding:16px 14px; border-radius:14px; background:linear-gradient(135deg,#12213f,#0D1117); border:1px solid var(--blue); margin-bottom:18px}
+.section-hero h2.hero-title{color:var(--amber); margin:0 0 4px; font-size:1.13rem; border:none; padding:0}
+.section-hero p{color:var(--muted); margin:0; font-size:.82rem}
+.badge{display:inline-block; background:var(--blue); color:#fff; padding:3px 12px; border-radius:20px; font-size:.75rem; margin-top:8px}
+.badge.amber{background:var(--amber); color:#000}
+.formula-box{background:#0A0E14; border:1px solid var(--blue); border-radius:8px; padding:10px 12px; margin:8px 0; font-family:'JetBrains Mono',monospace; color:#93c5fd; direction:ltr; text-align:center; font-size:.92rem}
+.formula-label{color:var(--amber); font-family:'Tajawal'; direction:rtl; font-size:.8rem; margin-bottom:4px; display:block}
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:12px}
+.q-num{color:var(--amber); font-weight:700; margin-left:4px}
+.options{list-style:none; padding:0; margin:8px 0 0}
+.options li{padding:7px 10px; margin-bottom:6px; border-radius:8px; background:#0f1420; border:1px solid var(--border); font-size:.9rem}
+details{margin-top:6px}
+summary{cursor:pointer; color:var(--blue); font-size:.85rem; font-weight:700; padding:4px 0}
+.answer-box{margin-top:6px; background:#0a1f14; border-right:3px solid var(--green); padding:8px 10px; border-radius:6px; font-size:.87rem}
+.correct{color:var(--green); font-weight:700}
+.open-q{font-size:.95rem; margin-bottom:4px}
+.exam-badge{display:inline-block; background:var(--amber); color:#000; font-size:.7rem; padding:2px 10px; border-radius:10px; font-weight:700; margin-bottom:8px}
+.section-title{background:var(--blue); color:#fff; padding:8px 14px; border-radius:10px; font-size:1rem; margin-top:26px; margin-bottom:12px; text-align:center}
+.mini-toc{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px; margin-bottom:18px}
+.mini-toc a{color:var(--blue); display:block; padding:4px 0; text-decoration:none; font-size:.9rem}
+.progress{width:100%; background:var(--card); border-radius:20px; height:8px; margin-bottom:16px; overflow:hidden; border:1px solid var(--border)}
+.progress-fill{height:100%; background:var(--blue); width:0%; transition:width .3s}
+.counter{color:var(--muted); font-size:.85rem; margin-bottom:10px; text-align:center}
+.flashcard-wrap{width:100%; perspective:1200px; margin-bottom:16px}
+.flashcard{position:relative; width:100%; min-height:230px; transform-style:preserve-3d; transition:transform .5s; cursor:pointer}
+.flashcard.flipped{transform:rotateY(180deg)}
+.face{position:absolute; inset:0; backface-visibility:hidden; border-radius:16px; padding:22px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border:1px solid var(--border)}
+.front{background:linear-gradient(135deg,#161B22,#0D1117); border-color:var(--blue)}
+.back{background:linear-gradient(135deg,#1c1508,#161B22); border-color:var(--amber); transform:rotateY(180deg); font-size:.94rem; line-height:1.7}
+.q-label, .a-label{font-size:.7rem; color:var(--muted); text-transform:uppercase; margin-bottom:10px; letter-spacing:1px}
+.q-text{font-size:1rem; font-weight:700; color:var(--white)}
+.a-text{color:var(--white)}
+.tap-hint{position:absolute; bottom:10px; font-size:.7rem; color:var(--muted)}
+.fc-controls{display:flex; gap:10px; width:100%}
+.btn{flex:1; padding:12px; border-radius:10px; border:none; font-size:.95rem; font-family:'Tajawal'; font-weight:700; cursor:pointer}
+.btn-prev{background:var(--card); color:var(--white); border:1px solid var(--border)}
+.btn-next{background:var(--blue); color:#fff}
+.btn-shuffle{background:var(--amber); color:#000; flex:0 0 auto; padding:12px 16px}
+.footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:40px}
+</style>
+
+<style>
+/* ===== Floating Lecture Navigator (injected) ===== */
+.lecnav-fab{
+  position:fixed; bottom:18px; left:18px; z-index:999;
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg,#2563EB,#1d4ed8);
+  color:#fff; border:none; box-shadow:0 4px 14px rgba(37,99,235,.5);
+  font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:transform .2s;
+}
+.lecnav-fab:active{transform:scale(.92)}
+.lecnav-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000;
+  display:none; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.lecnav-overlay.open{display:flex}
+.lecnav-sheet{
+  width:100%; max-width:600px; background:#161B22; border:1px solid #2D3440;
+  border-bottom:none; border-radius:20px 20px 0 0; padding:16px 14px 26px;
+  max-height:80vh; overflow-y:auto; animation:lecnavUp .25s ease;
+  font-family:'Tajawal','Segoe UI',sans-serif;
+}
+@keyframes lecnavUp{from{transform:translateY(30px); opacity:0} to{transform:translateY(0); opacity:1}}
+.lecnav-sheet h3{
+  color:#E8A000; margin:0 0 12px; font-size:1.05rem; text-align:center;
+  border:none; padding:0;
+}
+.lecnav-home{
+  display:block; text-align:center; color:#93c5fd; text-decoration:none;
+  font-size:.85rem; margin-bottom:14px; padding:8px; border:1px dashed #2D3440;
+  border-radius:10px;
+}
+.lecnav-list{display:flex; flex-direction:column; gap:8px}
+.lecnav-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-radius:12px; background:#0f1420; border:1px solid #2D3440;
+  color:#E2E8F0; text-decoration:none; font-size:.9rem; transition:.15s;
+}
+.lecnav-item:active{background:#1c2532}
+.lecnav-item.current{border-color:#2563EB; background:#0e1c2b}
+.lecnav-item .lecnav-num{
+  flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+  background:#2563EB; color:#fff; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:.85rem; font-family:'JetBrains Mono',monospace;
+}
+.lecnav-item.current .lecnav-num{background:#E8A000; color:#000}
+.lecnav-item .lecnav-title{flex:1}
+.lecnav-close{
+  position:absolute; top:10px; left:14px; background:none; border:none;
+  color:#8B96A5; font-size:1.3rem; cursor:pointer; padding:4px 8px;
+}
+.lecnav-sheet{position:relative}
+</style>
+
+</head>
+<body>
+
+<!-- ===== Floating Lecture Navigator (injected) ===== -->
+<button class="lecnav-fab" id="lecnavFab" onclick="document.getElementById('lecnavOverlay').classList.add('open')" aria-label="التنقل بين المحاضرات">☰</button>
+<div class="lecnav-overlay" id="lecnavOverlay" onclick="if(event.target===this) this.classList.remove('open')">
+  <div class="lecnav-sheet">
+    <button class="lecnav-close" onclick="document.getElementById('lecnavOverlay').classList.remove('open')">✕</button>
+    <h3>📚 التنقل بين المحاضرات</h3>
+    <a class="lecnav-home" href="index.html">⌂ العودة للفهرس الرئيسي</a>
+    <div class="lecnav-list">
+  <a class="lecnav-item" href="lecture1.html"><span class="lecnav-num">1</span><span class="lecnav-title">مدخل في الالكترونيات</span></a>
+  <a class="lecnav-item" href="lecture2.html"><span class="lecnav-num">2</span><span class="lecnav-title">الديودات (الثنائيات)</span></a>
+  <a class="lecnav-item" href="lecture3.html"><span class="lecnav-num">3</span><span class="lecnav-title">الدارة الأساسية والمقومات</span></a>
+  <a class="lecnav-item current" href="lecture4.html"><span class="lecnav-num">4</span><span class="lecnav-title">المرشحات والمحددات ومضاعفات الجهد</span></a>
+  <a class="lecnav-item" href="lecture5.html"><span class="lecnav-num">5</span><span class="lecnav-title">ديود زينر وأنواع الديودات الأخرى</span></a>
+  <a class="lecnav-item" href="lecture6.html"><span class="lecnav-num">6</span><span class="lecnav-title">الترانزستور BJT</span></a>
+  <a class="lecnav-item" href="lecture7.html"><span class="lecnav-num">7</span><span class="lecnav-title">منحنيات المجمع ومناطق عمل الترانزستور</span></a>
+    </div>
+  </div>
+</div>
+
+
+<div class="top-header">
+  <h1>⚡ المحاضرة 4 — المرشحات والمحددات ومضاعفات الجهد</h1>
+  <p>Filters, Limiters, Clampers & Voltage Multipliers · د. ابراهيم الأحمد</p>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary">📘 ملخص</button>
+    <button class="tab-btn" data-tab="cheat">📋 ورقة غش</button>
+    <button class="tab-btn" data-tab="questions">🧠 أسئلة</button>
+    <button class="tab-btn" data-tab="flash">⚡ بطاقات</button>
+  </div>
+</div>
+
+<div class="content-wrap">
+
+<!-- ================= TAB 1: SUMMARY ================= -->
+<div class="tab-panel active" id="tab-summary">
+<div class="section-hero"><h2 class="hero-title">📘 الملخص المكثف</h2><p>كل النقاط الأساسية — منظمة بالترتيب</p></div>
+
+<h2>1. مقدمة — الحاجة للترشيح</h2>
+<div class="card">
+  <ul>
+    <li>بمعظم تطبيقات إمدادات الطاقة، يجب تحويل تردد التيار المتناوب 50Hz إلى تيار مستمر DC</li>
+    <li>خرج المقوم: نصف موجة تردده 50Hz، أو موجة كاملة تردده 100Hz — كلاهما شكل نبضي أو "موجي" (ripple)</li>
+    <li>يجب ترشيح (تنعيم) هذا الخرج لتقليل التغيرات بالجهد الكبير</li>
+    <li>الترشيح (الفلترة/التنعيم) يُظهر جهد الخرج على نحو انسيابي تقريباً، مع كمية صغيرة من التذبذب تسمى <span class="key">جهد التموج (Ripple Voltage)</span></li>
+  </ul>
+</div>
+
+<h2>2. التنعيم بمكثف الدخل — Capacitor-Input Filter</h2>
+<div class="card">
+  <h3>آلية العمل</h3>
+  <ul>
+    <li>خلال ربع الدورة الأول للموجة الموجبة، الديود منحاز أمامياً، تمر الموجة مما يسمح للمكثف بالشحن حتى جهد الذروة (القمة) ناقص جهد فتح الديود <span class="en">0.7V</span></li>
+    <li>بعد الذروة، يصبح الديود منحازاً عكسياً، ويبدأ جهد المكثف بالتفريغ خلال الفترة من t1 إلى t2</li>
+    <li>يتم التفريغ فقط عبر مقاومة الحمل، بمعدل يحدده الثابت الزمني <span class="en">RLC</span>، والذي عادة ما يكون طويلاً مقارنة بفترة الدخل</li>
+    <li>خلال الربع الأول من الدورة التالية، يصبح الديود منحازاً أمامياً مرة أخرى، وهكذا تتكرر العملية</li>
+  </ul>
+  <div class="imp">💡 مقوم الموجة الكاملة أسهل بالترشيح من مقوم نصف الموجة، لأن الزمن الفاصل بين القمم (النبضات) أقصر بكثير في حالة الموجة الكاملة (نفس جهد الدخل، لكن تموج أقل نظراً لكون الفاصل الزمني الأقصر بين نبضات الموجة يجعل التنعيم أسهل).</div>
+</div>
+
+<h2>3. جهد التموج — Ripple Voltage</h2>
+<div class="card">
+  <ul>
+    <li>ناتج عن عملية الشحن والتفريغ للمكثف، وتعتمد قيمته على مقاومة الحمل R<sub>L</sub> والثابت الزمني</li>
+    <li>خلال الفترة التي يكون فيها الديود منحازاً عكسياً (بعد ذروة جهد الدخل الموجي)</li>
+    <li><span class="key">تعريف:</span> التباين أو الفرق بين جهد شحن المكثف وجهد تفريغه يسمى جهد التموج</li>
+    <li>عموماً، التموج غير مرغوب فيه؛ كلما كان أصغر كان الترشيح (التنعيم) أفضل</li>
+  </ul>
+  <div class="formula-box">
+    <span class="formula-label">التعريفات الأساسية</span>
+    V<sub>r(pp)</sub> = الجهد الموجي من الذروة إلى الذروة (Peak-to-Peak Ripple)<br>
+    V<sub>DC</sub> = القيمة المتوسطة لجهد الخرج على المرشح
+  </div>
+  <div class="note">📌 كلما كان معامل التموج أصغر، كان أفضل. يتم تخفيض معامل التموج عن طريق: (1) زيادة قيمة المكثف، أو (2) زيادة الثابت الزمني، أو (3) زيادة مقاومة الحمل.</div>
+</div>
+
+<h2>4. معامل التموج — Ripple Factor (r)</h2>
+<div class="card">
+  <p>مؤشر على فعالية عملية الترشيح (التنعيم). يُعرَّف بالعلاقة التالية:</p>
+  <div class="formula-box">
+    <span class="formula-label">معامل التموج</span>
+    r = V<sub>r(pp)</sub> / V<sub>DC</sub>
+  </div>
+  <p style="font-size:.85rem">كلما كان r أصغر، دل ذلك على ترشيح أفضل (تموج أقل نسبة للجهد المستمر).</p>
+</div>
+
+<h3>مثال محلول شامل — حساب معامل التموج لمقوم جسر مُرشَّح</h3>
+<div class="card">
+  <p><b>المعطيات:</b> جهد دخل 120V rms، تردد 60Hz، نسبة اللف n=0.1، مكثف C=1000μF، مقاومة حمل R=220Ω، ديودات 1N4001 (مقوم جسر كامل)</p>
+  <div class="formula">
+    <b>① الجهد الأولي (ذروة):</b><br>
+    V<sub>p(pri)</sub> = 1.414 × V<sub>rms</sub> = 1.414 × 120 = <b>170V</b><br><br>
+    <b>② الجهد الثانوي (ذروة):</b><br>
+    V<sub>p(sec)</sub> = n × V<sub>p(pri)</sub> = 0.1 × 170 = <b>17.0V</b><br><br>
+    <b>③ جهد الخرج المقوَّم (غير مُرشَّح، موجة كاملة، هبوط 1.4V لديودين):</b><br>
+    V<sub>p(rect)</sub> = V<sub>p(sec)</sub> − 1.4V = 17.0 − 1.4 = <b>15.6V</b><br><br>
+    <b>④ تردد الموجة الكاملة المقوَّمة = 120Hz</b> (ضعف تردد الدخل 60Hz)<br><br>
+    <b>⑤ جهد التموج التقريبي من الذروة للذروة:</b><br>
+    V<sub>r(pp)</sub> = [1/(f·R·C)] × V<sub>p(rect)</sub><br>
+    = [1/(120Hz × 220Ω × 1000μF)] × 15.6V<br>
+    = 0.0379 × 15.6V ≈ <b>0.591V</b><br><br>
+    <b>⑥ القيمة التقريبية للجهد المستمر بالخرج:</b><br>
+    V<sub>DC</sub> = (1 − 1/(2fRC)) × V<sub>p(rect)</sub><br>
+    ≈ 15.6V − (0.591V/2) ≈ <b>15.3V</b><br><br>
+    <b>⑦ معامل التموج الناتج:</b><br>
+    r = V<sub>r(pp)</sub> / V<sub>DC</sub> = 0.591 / 15.3 ≈ <b>0.039</b><br>
+    <b>نسبة التموج المئوية = 3.9%</b>
+  </div>
+</div>
+
+<h2>5. المحددات (القاصات) — Diode Limiters (Clippers)</h2>
+<div class="card">
+  <p>المحدد بالنسبة للديود: يحدّ أو يقص جزءاً من جهد الدخل (موجب أو سالب).</p>
+  <h3>① المحدد الموجب — Positive Limiter</h3>
+  <ul>
+    <li>يُطبَّق الجهد الموجب على الديود</li>
+    <li>عند بداية الدخل: طالما الجهد أقل من جهد الفتح (0.7V)، لا يمر تيار بالديود، بل يمر عبر الخرج إلى الحمل</li>
+    <li>عندما يصبح جهد الدخل أكبر من جهد الفتح (أي جهد النقطة A أعلى من +0.7V)، يصبح الديود منحازاً أمامياً، فيمرر التيار خلاله، وبالتالي لا يمر تيار عبر مقاومة الحمل عند الخرج</li>
+    <li>عندما يعود جهد الدخل إلى ما دون 0.7V (مع الموجة السالبة)، يكون الديود منحازاً عكسياً</li>
+    <li>الجهد الناتج يشبه الجزء السالب من جهد الدخل، لكن بقيمة يحددها مقسّم الجهد التالي</li>
+  </ul>
+  <h3>② المحدد السالب — Negative Limiter (عكس الموجب)</h3>
+  <ul>
+    <li>يجب أن يكون الديود متصلاً مع منبع لحد الجهد من مستوى سالب معين</li>
+    <li>عند النقطة A، يجب أن يذهب الجهد لانحياز سالب بقيمة أقل من <span class="en">−V<sub>BIAS</sub> − 0.7V</span> كي يصبح الديود منحازاً أمامياً وبذلك يمنع (يقص) القيمة السالبة الأكبر</li>
+  </ul>
+</div>
+
+<h3>المحددات مع منبع جهد مستمر (Biased Limiters)</h3>
+<div class="card">
+  <ul>
+    <li>يمكن ضبط المحددات عن طريق إضافة جهد انحياز V<sub>BIAS</sub> بدارة مع الديود</li>
+    <li>يجب أن يساوي الجهد عند النقطة A القيمة: <span class="en">V<sub>BIAS</sub> + 0.7V</span> قبل أن يصبح الديود منحازاً أمامياً</li>
+    <li>بمجرد بدء تشغيل الديود، يقتصر الجهد عند النقطة A على القيمة V<sub>BIAS</sub>+0.7V، بحيث يتم قطع وحذف جهد الدخل الأكبر من هذا المستوى</li>
+  </ul>
+  <div class="formula">
+    محدد موجب معدَّل (بجهد انحياز): يحد من جزء الموجة عند V<sub>BIAS</sub> − 0.7V<br>
+    محدد سالب معدَّل (بجهد انحياز): يحد من جزء الموجة عند −V<sub>BIAS</sub> + 0.7V
+  </div>
+  <p style="font-size:.85rem">عن طريق قلب الديود بالشكلين السابقين، يمكن تعديل كل من المحدد الموجب والسالب للحد من جهد الخرج بمستويات مختلفة حسب اتجاه توصيل الديود وقيمة V<sub>BIAS</sub>.</p>
+</div>
+
+<h2>6. مضاعفات الجهد — Voltage Multipliers</h2>
+<div class="card">
+  <p><span class="key">مضاعف الجهد</span> = دارة تُضاعف الجهد بعامل ضرب معين (2× أو 3×). ينقسم إلى نوعين رئيسيين:</p>
+  <ul>
+    <li><span class="key">مضاعف جهد الموجة الكاملة</span> (Full-Wave Voltage Doubler)</li>
+    <li><span class="key">مضاعف جهد نصف الموجة</span> (Half-Wave Voltage Doubler)</li>
+  </ul>
+</div>
+
+<h3>① مضاعف جهد الموجة الكاملة — Full-Wave Voltage Doubler</h3>
+<div class="card">
+  <ul>
+    <li>عندما يكون الجهد الثانوي موجباً: <span class="en">D1</span> منحاز أمامياً، فيشحن <span class="en">C1</span> إلى قيمة V<sub>p</sub> تقريباً</li>
+    <li>خلال النصف السالب من الدورة: <span class="en">D2</span> منحاز أمامياً، فيشحن <span class="en">C2</span> إلى قيمة V<sub>p</sub> تقريباً</li>
+    <li>الجهد الناتج يُؤخذ عبر المكثفين بالتسلسل (على التوالي)</li>
+  </ul>
+  <div class="formula">V<sub>out</sub> = V<sub>C1</sub> + V<sub>C2</sub> ≈ 2V<sub>p</sub></div>
+</div>
+
+<h3>② مضاعف جهد نصف الموجة — Half-Wave Voltage Doubler</h3>
+<div class="card">
+  <ul>
+    <li>خلال النصف الموجب من دورة الجهد الثانوي: <span class="en">D1</span> منحاز أمامياً، و<span class="en">D2</span> منحاز عكسياً</li>
+    <li>يتم شحن <span class="en">C1</span> إلى القيمة: <span class="en">V<sub>p</sub> − 0.7V</span></li>
+    <li>خلال النصف السالب من الدورة: <span class="en">D2</span> منحاز أمامياً، و<span class="en">D1</span> منحاز عكسياً</li>
+    <li>نظراً لعدم قدرة C1 على التفريغ (لا يوجد مسار تفريغ سريع)، يُضاف جهد C1 على الجهد الثانوي لشحن C2 إلى قيمة تصل تقريباً <span class="en">2V<sub>p</sub></span></li>
+    <li>بتطبيق قانون كيرشوف حول الحلقة، فإن الجهد عبر C2 يساوي تقريباً 2V<sub>p</sub></li>
+  </ul>
+  <div class="formula">V<sub>C2</sub> ≈ 2V<sub>p</sub></div>
+</div>
+
+<h3>③ مضاعف الجهد الثلاثي — Voltage Tripler</h3>
+<div class="card">
+  <ul>
+    <li>بإضافة ديود ومكثف إلى دارة مضاعف نصف الموجة، ينشأ جهد يعادل ثلاثة أضعاف الجهد الأصلي</li>
+    <li>بالنصف الموجب من دورة الجهد الثانوي: يُشحن <span class="en">C1</span> إلى V<sub>p</sub> عبر <span class="en">D1</span></li>
+    <li>بالنصف السالب من الدورة: يُشحن <span class="en">C2</span> إلى 2V<sub>p</sub> عبر <span class="en">D2</span> (كما بالمضاعف الثنائي)</li>
+    <li>خلال الدورة الموجبة التالية: يُشحن <span class="en">C3</span> إلى 2V<sub>p</sub> عبر <span class="en">D3</span></li>
+    <li>يُؤخذ الخرج عبر <span class="en">C1</span> و<span class="en">C3</span> بالتسلسل</li>
+  </ul>
+  <div class="formula">V<sub>out(tripler)</sub> = V<sub>C1</sub> + V<sub>C3</sub> ≈ V<sub>p</sub> + 2V<sub>p</sub> = 3V<sub>p</sub></div>
+</div>
+
+<h2>7. جدول ملخص لمضاعفات الجهد</h2>
+<div class="card">
+  <table>
+    <tr><th>النوع</th><th>عدد الديودات/المكثفات</th><th>V<sub>out</sub></th></tr>
+    <tr><td>مضاعف نصف موجة (Doubler)</td><td>2 / 2</td><td>≈ 2V<sub>p</sub></td></tr>
+    <tr><td>مضاعف موجة كاملة (Doubler)</td><td>2 / 2</td><td>≈ 2V<sub>p</sub></td></tr>
+    <tr><td>مضاعف ثلاثي (Tripler)</td><td>3 / 3</td><td>≈ 3V<sub>p</sub></td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — المحاضرة 4 | إلكترونيات · د. ابراهيم الأحمد</div>
+</div>
+
+<!-- ================= TAB 2: CHEATSHEET ================= -->
+<div class="tab-panel" id="tab-cheat">
+<div class="section-hero"><h2 class="hero-title">📋 ورقة الغش</h2><p>معادلات وقواعد فقط — بدون شرح</p><span class="badge amber">Cheat Sheet</span></div>
+
+<h2>معامل التموج</h2>
+<div class="card">
+  <div class="formula-box">
+    r = V_r(pp) / V_DC<br>
+    نسبة التموج % = r × 100
+  </div>
+</div>
+
+<h2>جهد التموج التقريبي (موجة كاملة)</h2>
+<div class="card">
+  <div class="formula-box">
+    V_r(pp) = [1/(f·R·C)] × V_p(rect)<br>
+    V_DC ≈ [1 − 1/(2fRC)] × V_p(rect)
+  </div>
+  <p style="font-size:.8rem; color:var(--muted)">f = 2×تردد الدخل (لموجة كاملة) | R = مقاومة الحمل | C = سعة المكثف</p>
+</div>
+
+<h2>لتقليل معامل التموج (تحسين الترشيح)</h2>
+<div class="card">
+  <ul>
+    <li>زيادة قيمة المكثف C</li>
+    <li>زيادة مقاومة الحمل R</li>
+    <li>استخدام مقوم موجة كاملة بدل نصف موجة</li>
+  </ul>
+</div>
+
+<h2>المحددات — القيم الحدية</h2>
+<div class="card">
+  <table>
+    <tr><th>النوع</th><th>مستوى القص</th></tr>
+    <tr><td>محدد موجب بسيط</td><td>عند +0.7V</td></tr>
+    <tr><td>محدد سالب بسيط</td><td>عند −0.7V</td></tr>
+    <tr><td>محدد موجب مع V_BIAS</td><td>عند V_BIAS + 0.7V</td></tr>
+    <tr><td>محدد سالب مع V_BIAS</td><td>عند −V_BIAS − 0.7V</td></tr>
+  </table>
+</div>
+
+<h2>مضاعفات الجهد</h2>
+<div class="card">
+  <div class="formula-box">
+    Half-Wave Doubler: V_out ≈ 2V_p<br>
+    Full-Wave Doubler: V_out ≈ 2V_p<br>
+    Tripler: V_out ≈ 3V_p
+  </div>
+  <table>
+    <tr><th>النوع</th><th>عدد الديودات</th><th>عدد المكثفات</th></tr>
+    <tr><td>Doubler</td><td>2</td><td>2</td></tr>
+    <tr><td>Tripler</td><td>3</td><td>3</td></tr>
+  </table>
+</div>
+
+<h2>مصطلحات إنجليزي ↔ عربي سريعة</h2>
+<div class="card">
+  <table>
+    <tr><td class="en">Filter</td><td>مرشح</td></tr>
+    <tr><td class="en">Ripple Voltage</td><td>جهد التموج</td></tr>
+    <tr><td class="en">Ripple Factor</td><td>معامل التموج</td></tr>
+    <tr><td class="en">Capacitor-Input Filter</td><td>ترشيح بمكثف الدخل</td></tr>
+    <tr><td class="en">Limiter / Clipper</td><td>محدد / قاص</td></tr>
+    <tr><td class="en">Positive/Negative Limiter</td><td>محدد موجب/سالب</td></tr>
+    <tr><td class="en">Biased Limiter</td><td>محدد بجهد انحياز</td></tr>
+    <tr><td class="en">Voltage Multiplier</td><td>مضاعف الجهد</td></tr>
+    <tr><td class="en">Voltage Doubler</td><td>مضاعف جهد ثنائي</td></tr>
+    <tr><td class="en">Voltage Tripler</td><td>مضاعف جهد ثلاثي</td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — Cheat Sheet المحاضرة 4</div>
+</div>
+
+<!-- ================= TAB 3: QUESTIONS ================= -->
+<div class="tab-panel" id="tab-questions">
+<div class="section-hero"><h2 class="hero-title">🧠 بنك الأسئلة</h2><p>اختيار من متعدد · أسئلة مفتوحة · محاكاة امتحان</p></div>
+
+<div class="mini-toc">
+  <a href="#mcq4">① اختيار من متعدد (15 سؤال)</a>
+  <a href="#open4">② أسئلة مفتوحة (10 أسئلة)</a>
+  <a href="#exam4">③ محاكاة امتحان</a>
+</div>
+
+<div class="section-title" id="mcq4">① اختيار من متعدد</div>
+
+<div class="q-card">
+  <span class="q-num">1.</span> ما وظيفة الترشيح (الفلترة) بعد التقويم؟
+  <ul class="options"><li>a) رفع الجهد</li><li>b) تقليل التغيرات (التموج) بالجهد</li><li>c) تحويل DC إلى AC</li><li>d) خفض التيار فقط</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">2.</span> ما معادلة معامل التموج (Ripple Factor)؟
+  <ul class="options"><li>a) r = V_DC / V_r(pp)</li><li>b) r = V_r(pp) / V_DC</li><li>c) r = V_p × V_DC</li><li>d) r = V_r(pp) × V_DC</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) r = V_r(pp) / V_DC</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">3.</span> لماذا مقوم الموجة الكاملة أسهل بالترشيح من مقوم نصف الموجة؟
+  <ul class="options">
+    <li>a) لأن جهده أعلى</li>
+    <li>b) لأن الفاصل الزمني بين نبضاته أقصر</li>
+    <li>c) لأنه يستخدم مكثفاً أصغر</li>
+    <li>d) لا فرق بينهما</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">4.</span> لتقليل معامل التموج (تحسين الترشيح)، يمكن:
+  <ul class="options"><li>a) تقليل المكثف</li><li>b) تقليل مقاومة الحمل</li><li>c) زيادة المكثف أو زيادة مقاومة الحمل</li><li>d) استخدام مقوم نصف موجة بدل الكامل</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">5.</span> بالمحدد الموجب البسيط، متى يبدأ الديود بالتوصيل ويحد من الجهد؟
+  <ul class="options"><li>a) عند أي جهد موجب</li><li>b) عندما يتجاوز جهد الدخل 0.7V</li><li>c) عند الجهد السالب فقط</li><li>d) لا يوصل أبداً</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">6.</span> بمحدد موجب بجهد انحياز V_BIAS، عند أي جهد يتم قص (حذف) جهد الدخل الزائد؟
+  <ul class="options"><li>a) 0.7V</li><li>b) V_BIAS فقط</li><li>c) V_BIAS + 0.7V</li><li>d) V_BIAS − 0.7V</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) V_BIAS + 0.7V</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">7.</span> جهد خرج مضاعف الجهد الثنائي (Voltage Doubler) يساوي تقريباً:
+  <ul class="options"><li>a) V_p</li><li>b) 1.5V_p</li><li>c) 2V_p</li><li>d) 3V_p</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) 2V_p</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">8.</span> جهد خرج مضاعف الجهد الثلاثي (Voltage Tripler) يساوي تقريباً:
+  <ul class="options"><li>a) V_p</li><li>b) 2V_p</li><li>c) 3V_p</li><li>d) 4V_p</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) 3V_p</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">9.</span> بمضاعف الجهد النصفي (Half-Wave Doubler)، لماذا يصل جهد C2 إلى 2V_p؟
+  <ul class="options">
+    <li>a) لأن C1 يفرّغ شحنته بالكامل على C2</li>
+    <li>b) لأن جهد C1 المشحون يُضاف لجهد الثانوي عند شحن C2</li>
+    <li>c) لأن الديودين يعملان بالتوازي</li>
+    <li>d) لا علاقة بينهما</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">10.</span> ما هو Vr(pp)؟
+  <ul class="options"><li>a) الجهد المستمر بالخرج</li><li>b) الجهد الموجي من الذروة للذروة</li><li>c) جهد الدخل الأصلي</li><li>d) جهد الديود الثابت</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">11.</span> خلال تفريغ المكثف بمرشح الدخل، يتم التفريغ عبر:
+  <ul class="options"><li>a) الديود</li><li>b) مقاومة الحمل فقط</li><li>c) الملف الابتدائي</li><li>d) لا يحدث تفريغ إطلاقاً</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) مقاومة الحمل فقط</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">12.</span> بمضاعف الجهد الثلاثي، عدد الديودات والمكثفات المطلوبة:
+  <ul class="options"><li>a) 2 و 2</li><li>b) 3 و 3</li><li>c) 4 و 4</li><li>d) 1 و 3</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) 3 و 3</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">13.</span> إذا كان معامل التموج r=0.039، فإن نسبة التموج المئوية:
+  <ul class="options"><li>a) 0.39%</li><li>b) 3.9%</li><li>c) 39%</li><li>d) 0.039%</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) 3.9%</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">14.</span> بالمحدد السالب البسيط، الديود يوصل عندما يصبح جهد الدخل:
+  <ul class="options"><li>a) أكبر من 0.7V</li><li>b) أقل من −0.7V تقريباً</li><li>c) يساوي صفر</li><li>d) لا يوصل أبداً</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">15.</span> ما الثابت الزمني المؤثر بعملية تفريغ مكثف الترشيح؟
+  <ul class="options"><li>a) LC فقط</li><li>b) RLC (مقاومة الحمل × سعة المكثف)</li><li>c) لا يوجد ثابت زمني</li><li>d) يعتمد على تردد المصدر فقط</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="section-title" id="open4">② أسئلة مفتوحة</div>
+
+<div class="q-card">
+  <p class="open-q"><b>1.</b> اشرح آلية عمل التنعيم بمكثف الدخل خلال دورة كاملة من الموجة.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">خلال الربع الأول من الموجة الموجبة، الديود منحاز أمامياً فيشحن المكثف حتى جهد الذروة ناقص جهد فتح الديود (0.7V). بعد الذروة، ينحاز الديود عكسياً ويبدأ المكثف بالتفريغ عبر مقاومة الحمل بمعدل يحدده الثابت الزمني RLC، وعادة يكون طويلاً مقارنة بفترة الدخل. خلال الربع الأول من الدورة التالية، يصبح الديود منحازاً أمامياً مجدداً ويعيد شحن المكثف، وتتكرر العملية.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>2.</b> لماذا يعتبر مقوم الموجة الكاملة أسهل بالترشيح من مقوم نصف الموجة رغم نفس جهد الدخل؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">لأن الفاصل الزمني بين نبضات الموجة الكاملة أقصر بكثير (تردد ضعف تردد نصف الموجة)، مما يعطي المكثف وقتاً أقل للتفريغ بين كل نبضتين، فيكون التموج الناتج أقل لنفس قيمة المكثف ومقاومة الحمل.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>3.</b> احسب معامل التموج إذا كان V_r(pp)=1V وV_DC=20V.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">r = V_r(pp)/V_DC = 1/20 = 0.05 → نسبة التموج = 5%</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>4.</b> اذكر ثلاث طرق لتقليل معامل التموج وتحسين الترشيح.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">(1) زيادة قيمة سعة المكثف C. (2) زيادة مقاومة الحمل R (إذا أمكن). (3) استخدام مقوم موجة كاملة بدل نصف موجة (يضاعف التردد فيقلل التموج).</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>5.</b> اشرح الفرق بين المحدد الموجب والمحدد السالب من ناحية اتجاه توصيل الديود والجزء الذي يُقص من الموجة.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">المحدد الموجب: الديود موصول بحيث يوصل عندما يتجاوز جهد الدخل +0.7V، فيقص/يحد الجزء الموجب من الموجة عند هذا المستوى. المحدد السالب: الديود موصول بالاتجاه المعاكس، فيوصل عندما ينخفض جهد الدخل عن −0.7V تقريباً، ليقص الجزء السالب من الموجة.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>6.</b> كيف يتم ضبط مستوى القص بالمحددات باستخدام جهد الانحياز V_BIAS؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">بإضافة مصدر جهد V_BIAS بالتسلسل مع الديود بالدارة، يتغير مستوى الجهد الذي عنده يبدأ الديود بالتوصيل. بالمحدد الموجب المعدَّل، يوصل الديود عند V_BIAS+0.7V بدل 0.7V فقط، مما يزيح مستوى القص لأعلى أو لأسفل حسب قيمة واتجاه V_BIAS.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>7.</b> اشرح كيف يعمل مضاعف الجهد الثنائي بنوعيه (نصف موجة وموجة كاملة) بشكل عام.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  بمضاعف الموجة الكاملة: يشحن كل من D1,C1 بالنصف الموجب إلى Vp، وD2,C2 بالنصف السالب إلى Vp، ويؤخذ الخرج عبر المكثفين بالتسلسل فيصبح 2Vp.<br>
+  بمضاعف نصف الموجة: يشحن C1 بالنصف الموجب إلى Vp−0.7، وبالنصف السالب يُضاف جهد C1 لجهد الثانوي فيشحن C2 إلى 2Vp تقريباً.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>8.</b> ما الفرق البنيوي بين مضاعف الجهد الثنائي والثلاثي؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">مضاعف الجهد الثلاثي هو امتداد لمضاعف نصف الموجة الثنائي، بإضافة ديود ومكثف إضافيين (D3, C3). يُشحن C3 إلى 2Vp خلال دورة موجبة إضافية، ويُؤخذ الخرج عبر C1 وC3 بالتسلسل، فيصبح الجهد الكلي V_p + 2V_p = 3V_p.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>9.</b> بالمثال المحلول بالمحاضرة (V_p(rect)=15.6V، f=120Hz، R=220Ω، C=1000μF)، احسب V_r(pp) خطوة بخطوة.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  V_r(pp) = [1/(f·R·C)] × V_p(rect)<br>
+  = [1/(120×220×1000×10⁻⁶)] × 15.6<br>
+  = [1/26.4] × 15.6 ≈ 0.0379 × 15.6 ≈ 0.591V</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>10.</b> لماذا لا يستطيع المكثف C1 بمضاعف نصف الموجة "التفريغ" بسرعة بين الدورات؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">لأنه بمجرد شحن C1، لا يوجد مسار تفريغ سريع متاح له (الديودات تمنع التفريغ العكسي عبر الدارة)، لذا يبقى جهده محفوظاً تقريباً، مما يسمح له بالإضافة إلى جهد الثانوي بالدورة التالية لشحن C2 إلى قيمة أعلى (2Vp تقريباً).</div></details>
+</div>
+
+<div class="section-title" id="exam4">③ محاكاة امتحان</div>
+<div class="q-card">
+  <span class="exam-badge">⏱ محاكاة — 25 دقيقة</span>
+  <p style="font-size:.9rem; color:var(--muted)">أجب بدون فتح الملخص. راجع الأجوبة بالنهاية فقط.</p>
+
+  <p class="open-q"><b>س1 (4 علامات):</b> عرّف: جهد التموج، معامل التموج.</p>
+  <p class="open-q"><b>س2 (6 علامات):</b> دارة مقوم جسر مُرشَّح: V_p(rect)=20V، f=100Hz (موجة كاملة)، R=1kΩ، C=470μF. احسب: (أ) V_r(pp) (ب) V_DC التقريبي (ج) معامل التموج r والنسبة المئوية.</p>
+  <p class="open-q"><b>س3 (4 علامات):</b> اشرح آلية عمل المحدد الموجب البسيط (بدون جهد انحياز) عند تطبيق موجة جيبية على مدخله.</p>
+  <p class="open-q"><b>س4 (4 علامات):</b> إذا كانت V_p=15V، احسب جهد الخرج التقريبي لكل من: مضاعف الجهد الثنائي، ومضاعف الجهد الثلاثي.</p>
+  <p class="open-q"><b>س5 (4 علامات):</b> لماذا يُفضَّل استخدام مقوم موجة كاملة على نصف الموجة عند التصميم لتقليل التموج؟</p>
+  <p class="open-q"><b>س6 (3 علامات):</b> بمحدد سالب مع جهد انحياز V_BIAS=5V، عند أي جهد يبدأ الديود بالتوصيل؟</p>
+
+  <details><summary>📖 عرض نموذج الحل الكامل</summary>
+  <div class="answer-box">
+  <b>س1:</b> جهد التموج: التباين بين جهد شحن وتفريغ المكثف بمرشح الدخل، من الذروة للذروة. معامل التموج: النسبة r=V_r(pp)/V_DC، مؤشر على فعالية الترشيح.<br><br>
+  <b>س2:</b> V_r(pp) = [1/(100×1000×470×10⁻⁶)] × 20 = [1/47] × 20 ≈ 0.426V<br>
+  V_DC ≈ 20 − 0.426/2 ≈ 19.79V<br>
+  r = 0.426/19.79 ≈ 0.0215 → نسبة التموج ≈ 2.15%<br><br>
+  <b>س3:</b> طالما جهد الدخل أقل من 0.7V، الديود لا يوصل ويمر الجهد كاملاً للخرج. عندما يتجاوز جهد الدخل +0.7V، يصبح الديود منحازاً أمامياً ويوصل، فيُحدّ (يُقص) الجهد الزائد عند مستوى 0.7V تقريباً، بينما يمر الجزء السالب من الموجة دون تأثير.<br><br>
+  <b>س4:</b> مضاعف ثنائي: V_out ≈ 2×15 = 30V. مضاعف ثلاثي: V_out ≈ 3×15 = 45V.<br><br>
+  <b>س5:</b> لأن تردد خرج الموجة الكاملة ضعف تردد نصف الموجة، ما يعني فاصلاً زمنياً أقصر بين النبضات، فيقل الوقت المتاح لتفريغ المكثف بين النبضتين، وينتج تموج أقل لنفس قيم R وC.<br><br>
+  <b>س6:</b> يبدأ الديود بالتوصيل عند: −V_BIAS − 0.7V = −5 − 0.7 = −5.7V.
+  </div></details>
+</div>
+
+<div class="footer">CTS Prep Series — بنك أسئلة المحاضرة 4</div>
+</div>
+
+<!-- ================= TAB 4: FLASHCARDS ================= -->
+<div class="tab-panel" id="tab-flash">
+<div class="section-hero"><h2 class="hero-title">⚡ بطاقات المراجعة</h2><p>اضغط البطاقة لقلبها وعرض الجواب</p></div>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+<div class="counter" id="counter">1 / 20</div>
+
+<div class="flashcard-wrap">
+  <div class="flashcard" id="flashcard" onclick="flipCard()">
+    <div class="face front">
+      <div class="q-label">سؤال</div>
+      <div class="q-text" id="qText"></div>
+      <div class="tap-hint">👆 اضغط لعرض الجواب</div>
+    </div>
+    <div class="face back">
+      <div class="a-label">جواب</div>
+      <div class="a-text" id="aText"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fc-controls">
+  <button class="btn btn-prev" onclick="prevCard()">◀ السابق</button>
+  <button class="btn btn-shuffle" onclick="shuffleCards()">🔀</button>
+  <button class="btn btn-next" onclick="nextCard()">التالي ▶</button>
+</div>
+</div>
+
+<div class="footer">CTS Prep Series — المحاضرة 4 (موحدة) | إلكترونيات</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+const cards = [
+  {q:"ما وظيفة التنعيم (الترشيح) بعد التقويم؟", a:"إظهار جهد الخرج بشكل انسيابي تقريباً، بتقليل التغيرات الكبيرة بالجهد الناتجة عن التقويم."},
+  {q:"ما معادلة معامل التموج؟", a:"r = V_r(pp) / V_DC"},
+  {q:"لماذا مقوم الموجة الكاملة أسهل بالترشيح من نصف الموجة؟", a:"لأن الفاصل الزمني بين نبضاته أقصر (تردد أعلى)، فيقل وقت تفريغ المكثف بين النبضات."},
+  {q:"اذكر طريقتين لتقليل معامل التموج.", a:"زيادة قيمة المكثف C، أو زيادة مقاومة الحمل R."},
+  {q:"ما تعريف جهد التموج Vr(pp)؟", a:"التباين (الفرق) بين جهد شحن المكثف وجهد تفريغه، من الذروة للذروة."},
+  {q:"عبر أي عنصر يتم تفريغ مكثف الترشيح؟", a:"عبر مقاومة الحمل R_L فقط."},
+  {q:"متى يبدأ المحدد الموجب البسيط بقص الجهد؟", a:"عندما يتجاوز جهد الدخل قيمة جهد فتح الديود (0.7V تقريباً)."},
+  {q:"بمحدد موجب مع جهد انحياز V_BIAS، عند أي جهد يتم القص؟", a:"عند V_BIAS + 0.7V"},
+  {q:"بمحدد سالب مع جهد انحياز V_BIAS، عند أي جهد يتم القص؟", a:"عند −V_BIAS − 0.7V"},
+  {q:"ما جهد خرج مضاعف الجهد الثنائي (Doubler) تقريباً؟", a:"2V_p (ضعف جهد الذروة)."},
+  {q:"ما جهد خرج مضاعف الجهد الثلاثي (Tripler) تقريباً؟", a:"3V_p (ثلاثة أضعاف جهد الذروة)."},
+  {q:"كم عدد الديودات والمكثفات بمضاعف الجهد الثنائي؟", a:"ديودان (2) ومكثفان (2)."},
+  {q:"كم عدد الديودات والمكثفات بمضاعف الجهد الثلاثي؟", a:"ثلاثة ديودات (3) وثلاثة مكثفات (3)."},
+  {q:"بمضاعف نصف الموجة، إلى أي قيمة يُشحن C1 بالنصف الموجب؟", a:"V_p − 0.7V"},
+  {q:"بمضاعف نصف الموجة، لماذا يصل جهد C2 إلى 2Vp تقريباً؟", a:"لأن جهد C1 المشحون مسبقاً يُضاف إلى جهد الثانوي عند شحن C2 بالنصف السالب (تطبيق قانون كيرشوف)."},
+  {q:"إذا كان معامل التموج r=0.05، ما نسبة التموج المئوية؟", a:"5%"},
+  {q:"ما وحدة القياس المؤثرة بمعدل تفريغ المكثف بمرشح الدخل؟", a:"الثابت الزمني RLC (حاصل ضرب مقاومة الحمل × سعة المكثف)."},
+  {q:"في المحدد السالب، متى يوصل الديود؟", a:"عندما يصبح جهد الدخل أقل من −0.7V تقريباً (بالمحدد البسيط بدون انحياز)."},
+  {q:"احسب V_p(sec) إذا كان جهد rms=120V ونسبة اللف n=0.1.", a:"V_p(pri)=1.414×120=170V → V_p(sec)=0.1×170=17V"},
+  {q:"لماذا نستخدم مضاعفات الجهد بدلاً من محول برفع جهد مباشر أحياناً؟", a:"لتحقيق جهود عالية دون الحاجة لمحول كبير ومكلف، باستخدام ديودات ومكثفات فقط لمضاعفة جهد ذروة موجود أصلاً."}
+];
+
+let currentIndex = 0;
+let isFlipped = false;
+
+function renderCard(){
+  document.getElementById('qText').textContent = cards[currentIndex].q;
+  document.getElementById('aText').textContent = cards[currentIndex].a;
+  document.getElementById('counter').textContent = (currentIndex+1) + ' / ' + cards.length;
+  document.getElementById('progressFill').style.width = ((currentIndex+1)/cards.length*100) + '%';
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+  isFlipped = false;
+}
+
+function flipCard(){
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard(){
+  currentIndex = (currentIndex + 1) % cards.length;
+  renderCard();
+}
+
+function prevCard(){
+  currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+  renderCard();
+}
+
+function shuffleCards(){
+  for(let i = cards.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  currentIndex = 0;
+  renderCard();
+}
+
+renderCard();
+</script>
+
+</body>
+</html>

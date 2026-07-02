@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحاضرة 5 — ديود زينر وأنواع الديودات الأخرى | CTS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+  --bg:#0D1117; --card:#161B22; --border:#2D3440;
+  --blue:#2563EB; --amber:#E8A000; --white:#E2E8F0; --muted:#8B96A5;
+  --green:#22c55e; --red:#ef4444;
+}
+*{box-sizing:border-box}
+html,body{margin:0; padding:0}
+body{background:var(--bg); color:var(--white); font-family:'Tajawal','Segoe UI',sans-serif; line-height:1.9; padding-bottom:70px}
+.en, .mono{font-family:'JetBrains Mono',monospace; color:#93c5fd; direction:ltr}
+.top-header{position:sticky; top:0; z-index:100; background:linear-gradient(135deg,#12213f,#0D1117); border-bottom:1px solid var(--blue); padding:14px 16px 0; text-align:center}
+.top-header h1{color:var(--amber); margin:0 0 3px; font-size:1.06rem}
+.top-header p{color:var(--muted); margin:0 0 12px; font-size:.74rem}
+.tabs{display:flex; gap:6px; overflow-x:auto; padding:0 10px 10px; scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto; background:var(--card); color:var(--muted); border:1px solid var(--border); border-radius:20px; padding:8px 16px; font-family:'Tajawal'; font-size:.85rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:.2s}
+.tab-btn.active{background:var(--blue); color:#fff; border-color:var(--blue)}
+.content-wrap{padding:16px 14px 10px; max-width:600px; margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+h2{color:var(--blue); font-size:1.05rem; border-right:4px solid var(--amber); padding-right:10px; margin-top:28px; margin-bottom:10px}
+h3{color:var(--amber); font-size:.96rem; margin-top:18px; margin-bottom:8px}
+.card{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px}
+ul{margin:8px 0; padding-right:20px}
+li{margin-bottom:6px}
+.key{color:var(--amber); font-weight:700}
+.formula{background:#0A0E14; border:1px dashed var(--blue); border-radius:8px; padding:10px 14px; text-align:center; font-family:'JetBrains Mono',monospace; color:#93c5fd; margin:10px 0; font-size:.9rem; direction:ltr}
+table{width:100%; border-collapse:collapse; margin:10px 0; font-size:.84rem}
+th,td{border:1px solid var(--border); padding:7px 8px; text-align:center}
+th{background:#1c2532; color:var(--amber)}
+.note{background:#1c1508; border-right:4px solid var(--amber); border-radius:8px; padding:10px 14px; margin:12px 0; font-size:.86rem}
+.imp{background:#0e1c2b; border-right:4px solid var(--blue); border-radius:8px; padding:10px 14px; margin:12px 0; font-size:.86rem}
+.compare-grid{display:flex; flex-direction:column; gap:10px}
+.compare-item{background:#0f1420; border-radius:10px; padding:10px 14px; border:1px solid var(--border)}
+.compare-item .title{color:var(--amber); font-weight:700; margin-bottom:4px}
+.section-hero{text-align:center; padding:16px 14px; border-radius:14px; background:linear-gradient(135deg,#12213f,#0D1117); border:1px solid var(--blue); margin-bottom:18px}
+.section-hero h2.hero-title{color:var(--amber); margin:0 0 4px; font-size:1.1rem; border:none; padding:0}
+.section-hero p{color:var(--muted); margin:0; font-size:.8rem}
+.badge{display:inline-block; background:var(--blue); color:#fff; padding:3px 12px; border-radius:20px; font-size:.75rem; margin-top:8px}
+.badge.amber{background:var(--amber); color:#000}
+.formula-box{background:#0A0E14; border:1px solid var(--blue); border-radius:8px; padding:10px 12px; margin:8px 0; font-family:'JetBrains Mono',monospace; color:#93c5fd; direction:ltr; text-align:center; font-size:.9rem}
+.formula-label{color:var(--amber); font-family:'Tajawal'; direction:rtl; font-size:.8rem; margin-bottom:4px; display:block}
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:12px}
+.q-num{color:var(--amber); font-weight:700; margin-left:4px}
+.options{list-style:none; padding:0; margin:8px 0 0}
+.options li{padding:7px 10px; margin-bottom:6px; border-radius:8px; background:#0f1420; border:1px solid var(--border); font-size:.9rem}
+details{margin-top:6px}
+summary{cursor:pointer; color:var(--blue); font-size:.85rem; font-weight:700; padding:4px 0}
+.answer-box{margin-top:6px; background:#0a1f14; border-right:3px solid var(--green); padding:8px 10px; border-radius:6px; font-size:.87rem}
+.correct{color:var(--green); font-weight:700}
+.open-q{font-size:.95rem; margin-bottom:4px}
+.exam-badge{display:inline-block; background:var(--amber); color:#000; font-size:.7rem; padding:2px 10px; border-radius:10px; font-weight:700; margin-bottom:8px}
+.section-title{background:var(--blue); color:#fff; padding:8px 14px; border-radius:10px; font-size:.98rem; margin-top:26px; margin-bottom:12px; text-align:center}
+.mini-toc{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px; margin-bottom:18px}
+.mini-toc a{color:var(--blue); display:block; padding:4px 0; text-decoration:none; font-size:.9rem}
+.progress{width:100%; background:var(--card); border-radius:20px; height:8px; margin-bottom:16px; overflow:hidden; border:1px solid var(--border)}
+.progress-fill{height:100%; background:var(--blue); width:0%; transition:width .3s}
+.counter{color:var(--muted); font-size:.85rem; margin-bottom:10px; text-align:center}
+.flashcard-wrap{width:100%; perspective:1200px; margin-bottom:16px}
+.flashcard{position:relative; width:100%; min-height:230px; transform-style:preserve-3d; transition:transform .5s; cursor:pointer}
+.flashcard.flipped{transform:rotateY(180deg)}
+.face{position:absolute; inset:0; backface-visibility:hidden; border-radius:16px; padding:22px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border:1px solid var(--border)}
+.front{background:linear-gradient(135deg,#161B22,#0D1117); border-color:var(--blue)}
+.back{background:linear-gradient(135deg,#1c1508,#161B22); border-color:var(--amber); transform:rotateY(180deg); font-size:.93rem; line-height:1.7}
+.q-label, .a-label{font-size:.7rem; color:var(--muted); text-transform:uppercase; margin-bottom:10px; letter-spacing:1px}
+.q-text{font-size:.98rem; font-weight:700; color:var(--white)}
+.a-text{color:var(--white)}
+.tap-hint{position:absolute; bottom:10px; font-size:.7rem; color:var(--muted)}
+.fc-controls{display:flex; gap:10px; width:100%}
+.btn{flex:1; padding:12px; border-radius:10px; border:none; font-size:.95rem; font-family:'Tajawal'; font-weight:700; cursor:pointer}
+.btn-prev{background:var(--card); color:var(--white); border:1px solid var(--border)}
+.btn-next{background:var(--blue); color:#fff}
+.btn-shuffle{background:var(--amber); color:#000; flex:0 0 auto; padding:12px 16px}
+.footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:40px}
+</style>
+
+<style>
+/* ===== Floating Lecture Navigator (injected) ===== */
+.lecnav-fab{
+  position:fixed; bottom:18px; left:18px; z-index:999;
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg,#2563EB,#1d4ed8);
+  color:#fff; border:none; box-shadow:0 4px 14px rgba(37,99,235,.5);
+  font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:transform .2s;
+}
+.lecnav-fab:active{transform:scale(.92)}
+.lecnav-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000;
+  display:none; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.lecnav-overlay.open{display:flex}
+.lecnav-sheet{
+  width:100%; max-width:600px; background:#161B22; border:1px solid #2D3440;
+  border-bottom:none; border-radius:20px 20px 0 0; padding:16px 14px 26px;
+  max-height:80vh; overflow-y:auto; animation:lecnavUp .25s ease;
+  font-family:'Tajawal','Segoe UI',sans-serif;
+}
+@keyframes lecnavUp{from{transform:translateY(30px); opacity:0} to{transform:translateY(0); opacity:1}}
+.lecnav-sheet h3{
+  color:#E8A000; margin:0 0 12px; font-size:1.05rem; text-align:center;
+  border:none; padding:0;
+}
+.lecnav-home{
+  display:block; text-align:center; color:#93c5fd; text-decoration:none;
+  font-size:.85rem; margin-bottom:14px; padding:8px; border:1px dashed #2D3440;
+  border-radius:10px;
+}
+.lecnav-list{display:flex; flex-direction:column; gap:8px}
+.lecnav-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-radius:12px; background:#0f1420; border:1px solid #2D3440;
+  color:#E2E8F0; text-decoration:none; font-size:.9rem; transition:.15s;
+}
+.lecnav-item:active{background:#1c2532}
+.lecnav-item.current{border-color:#2563EB; background:#0e1c2b}
+.lecnav-item .lecnav-num{
+  flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+  background:#2563EB; color:#fff; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:.85rem; font-family:'JetBrains Mono',monospace;
+}
+.lecnav-item.current .lecnav-num{background:#E8A000; color:#000}
+.lecnav-item .lecnav-title{flex:1}
+.lecnav-close{
+  position:absolute; top:10px; left:14px; background:none; border:none;
+  color:#8B96A5; font-size:1.3rem; cursor:pointer; padding:4px 8px;
+}
+.lecnav-sheet{position:relative}
+</style>
+
+</head>
+<body>
+
+<!-- ===== Floating Lecture Navigator (injected) ===== -->
+<button class="lecnav-fab" id="lecnavFab" onclick="document.getElementById('lecnavOverlay').classList.add('open')" aria-label="التنقل بين المحاضرات">☰</button>
+<div class="lecnav-overlay" id="lecnavOverlay" onclick="if(event.target===this) this.classList.remove('open')">
+  <div class="lecnav-sheet">
+    <button class="lecnav-close" onclick="document.getElementById('lecnavOverlay').classList.remove('open')">✕</button>
+    <h3>📚 التنقل بين المحاضرات</h3>
+    <a class="lecnav-home" href="index.html">⌂ العودة للفهرس الرئيسي</a>
+    <div class="lecnav-list">
+  <a class="lecnav-item" href="lecture1.html"><span class="lecnav-num">1</span><span class="lecnav-title">مدخل في الالكترونيات</span></a>
+  <a class="lecnav-item" href="lecture2.html"><span class="lecnav-num">2</span><span class="lecnav-title">الديودات (الثنائيات)</span></a>
+  <a class="lecnav-item" href="lecture3.html"><span class="lecnav-num">3</span><span class="lecnav-title">الدارة الأساسية والمقومات</span></a>
+  <a class="lecnav-item" href="lecture4.html"><span class="lecnav-num">4</span><span class="lecnav-title">المرشحات والمحددات ومضاعفات الجهد</span></a>
+  <a class="lecnav-item current" href="lecture5.html"><span class="lecnav-num">5</span><span class="lecnav-title">ديود زينر وأنواع الديودات الأخرى</span></a>
+  <a class="lecnav-item" href="lecture6.html"><span class="lecnav-num">6</span><span class="lecnav-title">الترانزستور BJT</span></a>
+  <a class="lecnav-item" href="lecture7.html"><span class="lecnav-num">7</span><span class="lecnav-title">منحنيات المجمع ومناطق عمل الترانزستور</span></a>
+    </div>
+  </div>
+</div>
+
+
+<div class="top-header">
+  <h1>⚡ المحاضرة 5 — ديود زينر وأنواع أخرى</h1>
+  <p>Zener Diode & Other Types of Diodes · د. ابراهيم الأحمد</p>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary">📘 ملخص</button>
+    <button class="tab-btn" data-tab="cheat">📋 ورقة غش</button>
+    <button class="tab-btn" data-tab="questions">🧠 أسئلة</button>
+    <button class="tab-btn" data-tab="flash">⚡ بطاقات</button>
+  </div>
+</div>
+
+<div class="content-wrap">
+
+<!-- ================= TAB 1: SUMMARY ================= -->
+<div class="tab-panel active" id="tab-summary">
+<div class="section-hero"><h2 class="hero-title">📘 الملخص المكثف</h2><p>كل النقاط الأساسية — منظمة بالترتيب</p></div>
+
+<h2>1. ديود زينر — The Zener Diode</h2>
+<div class="card">
+  <ul>
+    <li>ديود زينر له خط متعرج بالرمز يُذكِّر بالحرف <span class="en">Z</span></li>
+    <li>هو اتصال (تقاطع) بين منطقتي p وn من السيليكون، مصمم للعمل بمنطقة الانهيار العكسي دون حدوث تلف</li>
+    <li>يمكن التحكم بقيمة جهد انهيار ديود زينر عن طريق التحكم بعناية بمستوى الشوائب المضافة للسيليكون النقي لتحويله لنوع n أو p أثناء التصنيع</li>
+    <li>خاصية الديود العكسية: عندما يصل الديود للانهيار العكسي، يكون جهده ثابتاً تقريباً رغم تغيرات التيار التي نلاحظها بشكل جذري — هذا هو المبدأ الأساسي أو الرئيسي لعمل ديود زينر</li>
+  </ul>
+</div>
+
+<h2>2. انهيار زينر — Zener Breakdown</h2>
+<div class="card">
+  <ul>
+    <li>تم تصميم ثنائيات زينر للعمل بالانهيار العكسي</li>
+    <li>ديود زينر مُصحَّن بشدة للحد من انهيار الجهد الكبير العكسي</li>
+    <li>جهد انهيار ديود زينر (V<sub>Z</sub>) هو بداية عمل ديود زينر</li>
+    <li>خصائص الانهيار: نفس خصائص الثنائي العادي بحالة الانحياز الأمامي، أما بحالة الانحياز العكسي فإن التيار المار خلال الثنائي يكون ضئيلاً جداً للجهود الأقل من جهد انهيار زينر V<sub>Z</sub>، لكن عند الوصول لجهد زينر يزداد التيار بسرعة دون زيادة ملحوظة بالجهد</li>
+    <li>لذلك يُستخدم ثنائي زينر كمثبت أو منظم للجهد <span class="en">(Voltage Regulator)</span></li>
+  </ul>
+</div>
+
+<h2>3. تنظيم زينر — Zener Regulation</h2>
+<div class="card">
+  <ul>
+    <li>تعتمد فكرة تثبيت أو تنظيم الجهد باستخدام ثنائي زينر على احتفاظ الثنائي بمنطقة شبه انهيار بقيمة ثابتة للجهد عبر طرفيه، خلال مدى من التيار العكسي يتراوح من:</li>
+    <li><span class="key">I<sub>ZK</sub></span> (تيار ركبة زينر) → إلى → <span class="key">I<sub>ZM</sub></span> (أقصى تيار زينر)</li>
+    <li>يُعرَّف تيار الركبة I<sub>ZK</sub> بأنه أقل قيمة للتيار العكسي التي عندها يحافظ ثنائي زينر على منطقة الانهيار للعمل كمنظم للجهد</li>
+    <li>من منحنى الخواص نلاحظ أنه إذا قلَّت قيمة تيار زينر عن قيمة تيار ركبة الانهيار، فإن قيمة الجهد ستقل عن قيمة جهد زينر، وبالتالي يعمل الثنائي كمنظم للجهد فقط عندما يكون تيار زينر أكبر من I<sub>ZK</sub></li>
+    <li>أقصى قيمة للتيار يمكن أن تمر خلال ثنائي زينر في منطقة الانهيار وأي زيادة عن هذه القيمة سوف تؤدي إلى تدمير الثنائي بسبب ارتفاع درجة حرارة الثنائي عن القيمة القصوى التي يتحملها</li>
+    <li>يتم تحديد جهد زينر الاسمي V<sub>Z</sub> عادة بمواصفاته بقيمة تيار عكسي تُسمى تيار زينر الاختباري I<sub>ZT</sub> (هذه القيمة هي منتصف حدود تيار زينر)</li>
+  </ul>
+  <div class="note">📌 يبقى الجهد تقريباً ثابتاً حسب المسافة من التيار الابتدائي إلى الأعظمي لزينر، مع الملاحظة أن الجهد المثبت لن يكون ذو قيمة ثابتة تماماً بل سيكون هناك زيادة بسيطة على قيمة جهد زينر المحددة بمواصفات ثنائي زينر، وذلك بالرغم من الزيادة الكبيرة بالجهد العكسي المطبق.</div>
+</div>
+
+<h2>4. الدارة المكافئة لزينر — Zener Equivalent Circuits</h2>
+<div class="card">
+  <ul>
+    <li>يعمل ثنائي زينر كما لو كانت له بطارية جهدها يساوي جهد زينر V<sub>Z</sub>، متصلة مع مقاومة صغيرة r<sub>Z</sub> تمثل مقاومة ثنائي زينر</li>
+    <li>يمكن حساب قيمة المقاومة r<sub>Z</sub> من خلال منحنى الخواص لثنائي زينر بمنطقة الانهيار الموضح</li>
+    <li>يؤدي تغير صغير بقيمة التيار المار (أو بموجب قانون التيار) إلى تغير صغير بقيمة الجهد على طرفي الثنائي</li>
+  </ul>
+  <div class="formula-box">
+    <span class="formula-label">مقاومة زينر</span>
+    r<sub>Z</sub> = ΔV<sub>Z</sub> / ΔI<sub>Z</sub>
+  </div>
+</div>
+
+<h3>مثال محلول — إيجاد مقاومة ثنائي زينر</h3>
+<div class="card">
+  <p><b>المعطيات:</b> من منحنى الخواص: ΔVZ = 50mV، I<sub>ZK</sub>=10mA، ΔIZ=2mA، I<sub>ZM</sub>=12mA</p>
+  <div class="formula">
+    r<sub>Z</sub> = ΔV<sub>Z</sub> / ΔI<sub>Z</sub> = 50mV / 2mA = <b>25Ω</b>
+  </div>
+</div>
+
+<h2>5. معامل درجة الحرارة — Temperature Coefficient</h2>
+<div class="card">
+  <ul>
+    <li>يحدد معامل درجة الحرارة النسبة المئوية لتغير جهد زينر V<sub>Z</sub> لكل تغير بدرجة الحرارة مقداره درجة مئوية واحدة</li>
+    <li><b>مثال:</b> إذا كان جهد زينر 12V مع معامل درجة حرارة إيجابي 0.1%/°C، فإن V<sub>Z</sub> يتغير بمقدار 0.012V عندما تتغير درجة حرارة الوصلة بمقدار درجة واحدة</li>
+  </ul>
+  <div class="formula-box">
+    <span class="formula-label">معادلة حساب التغير بجهد زينر</span>
+    ΔV<sub>Z</sub> = V<sub>Z</sub> × TC × ΔT
+  </div>
+  <p style="font-size:.85rem">حيث: V<sub>Z</sub> = جهد زينر الاسمي عند درجة حرارة مرجعية 25°C. TC = معامل درجة الحرارة. ΔT = مقدار التغير بدرجة الحرارة من الدرجة المرجعية.</p>
+  <ul>
+    <li><span class="key">TC موجب:</span> يعني أن جهد زينر يزيد مع زيادة درجة الحرارة، أو يقل مع انخفاض درجة الحرارة</li>
+    <li><span class="key">TC سالب:</span> يعني أن جهد زينر يتناقص مع زيادة درجة الحرارة، أو يزيد مع انخفاض درجة الحرارة</li>
+  </ul>
+</div>
+
+<h3>مثال محلول — تغير جهد زينر مع درجة الحرارة</h3>
+<div class="card">
+  <p><b>المعطيات:</b> ثنائي زينر 8.2V (عند 25°C)، معامل درجة حرارة إيجابي 0.05%/°C. المطلوب: جهد زينر عند 60°C</p>
+  <div class="formula">
+    ΔV<sub>Z</sub> = V<sub>Z</sub> × TC × ΔT<br>
+    = (8.2V)(0.0005/°C)(60−25)°C<br>
+    = (8.2)(0.0005)(35) = <b>144mV</b><br><br>
+    V<sub>Z(60°C)</sub> = V<sub>Z</sub> + ΔV<sub>Z</sub> = 8.2V + 0.144V = <b>8.34V</b>
+  </div>
+  <div class="note">💡 لاحظ تحويل النسبة المئوية 0.05%/°C إلى الصيغة العشرية 0.0005/°C قبل التعويض بالمعادلة.</div>
+</div>
+
+<h2>6. استطاعة تبديد الطاقة وتخفيض الاستطاعة — Zener Power Dissipation and Derating</h2>
+<div class="card">
+  <ul>
+    <li>يتم تحديد واختيار ثنائيات زينر للعمل حسب القيمة العليا (القصوى) للاستطاعة التي يمكن أن يتحملها الثنائي، وتسمى <span class="key">استطاعة التبديد الأعظمية P<sub>D(max)</sub></span></li>
+    <li><b>مثال:</b> يُصنَّف زينر <span class="en">1N746</span> عند P<sub>D(max)</sub>=500mW، ويُصنَّف زينر <span class="en">1N3305A</span> عند P<sub>D(max)</sub>=50W</li>
+  </ul>
+  <div class="formula-box">
+    <span class="formula-label">الاستطاعة المبددة</span>
+    P<sub>Z</sub> = V<sub>Z</sub> × I<sub>Z</sub>
+  </div>
+  <p style="font-size:.85rem">نظراً لأن قيمة جهد زينر V<sub>Z</sub> تكون ثابتة تقريباً لثنائي زينر الواحد، فإن قيمة الاستطاعة المبددة P<sub>Z</sub> تعتمد على قيمة التيار المار I<sub>Z</sub>. وبالتالي فإن القيمة القصوى للاستطاعة المبددة في ثنائي زينر تُعطى بالعلاقة:</p>
+  <div class="formula-box">
+    P<sub>D(max)</sub> = V<sub>Z</sub> × I<sub>ZM</sub>
+  </div>
+  <p style="font-size:.85rem">حيث I<sub>ZM</sub> هو أقصى تيار زينر (Maximum Zener current).</p>
+</div>
+
+<h3>تخفيض الاستطاعة — Power Derating</h3>
+<div class="card">
+  <ul>
+    <li>عادة ما يتم تحديد الحد الأقصى لتبديد الاستطاعة من ثنائي زينر عند درجات حرارة معينة أو أقل (مثلاً 50°C)</li>
+    <li>فوق درجة الحرارة المحددة، يتم تقليل الحد الأقصى لتبديد الاستطاعة وفقاً لعامل الانهيار (عامل تخفيض الاستطاعة)</li>
+  </ul>
+</div>
+
+<h3>مثال محلول شامل — تغير جهد زينر مع تغير التيار (باستخدام r_Z)</h3>
+<div class="card">
+  <p><b>المعطيات:</b> زينر 1N4736A، r<sub>Z</sub>=3.5Ω، V<sub>Z</sub>=6.8V عند تيار اختباري I<sub>ZT</sub>=37mA</p>
+  <p><b>المطلوب:</b> الجهد على أطراف زينر عند I<sub>Z</sub>=50mA، وعند I<sub>Z</sub>=25mA</p>
+  <div class="formula">
+    <b>عند I_Z = 50mA:</b><br>
+    ΔI_Z = 50 − 37 = +13mA<br>
+    ΔV_Z = ΔI_Z × r_Z = (13mA)(3.5Ω) = +45.5mV<br>
+    V_Z = 6.8 + 0.0455 = <b>6.85V</b> (زيادة، لأن التيار ازداد)<br><br>
+    <b>عند I_Z = 25mA:</b><br>
+    ΔI_Z = 25 − 37 = −12mA<br>
+    ΔV_Z = ΔI_Z × r_Z = (−12mA)(3.5Ω) = −42mV<br>
+    V_Z = 6.8 − 0.042 = <b>6.76V</b> (نقصان، لأن التيار انخفض)
+  </div>
+  <div class="note">📌 القاعدة: زيادة التيار عن قيمة الاختبار تزيد الجهد قليلاً، ونقصان التيار عن قيمة الاختبار ينقص الجهد قليلاً، حسب مقاومة زينر الداخلية r_Z.</div>
+</div>
+
+<h2>7. أنواع أخرى من الديودات — Other Types of Diodes</h2>
+
+<h3>① الديود السعوي (Varactor Diode)</h3>
+<div class="card">
+  <ul>
+    <li>نوع خاص من الديودات تتغير سعته اعتماداً على جهد الانحياز العكسي المطبَّق عليه</li>
+    <li>عنصر شبه ناقل ثنائي القطب، سعته معتمدة على فرق الجهد المطبق عليه</li>
+    <li>يعمل هذا الديود دائماً بانحياز عكسي، ويتم انحيازه لإعطاء السعة الكامنة بمنطقة الاستنزاف (المُفرَّغة)</li>
+    <li>منطقة الاستنزاف بمثابة عازل، وتمثل مكثفاً بسبب خصائصها غير الموصلة</li>
+    <li>منطقتا p وn تكونان بمثابة "لوحي" المكثف</li>
+  </ul>
+</div>
+
+<h3>② الديود الباعث للضوء (LED — Light-Emitting Diode)</h3>
+<div class="card">
+  <ul>
+    <li>العملية الأساسية للديود الباعث للضوء: عندما يكون الديود منحازاً أمامياً، فإن الإلكترونات تعبر تقاطع pn من المادة n وتعيد تجميعها مع الثقوب بمواد النوع p</li>
+    <li>هذه الإلكترونات الحرة الموجودة بنطاق التوصيل ذات طاقة أعلى من الثقوب الموجودة بنطاق التكافؤ</li>
+    <li>الفرق بالطاقة بين الإلكترونات والثقوب يتوافق مع طاقة الضوء المرئي</li>
+    <li>عندما تتم عملية إعادة التركيب، تُطلَق إلكترونات إعادة التركيب طاقتها على شكل فوتونات</li>
+    <li>يميل الضوء المنبعث إلى أن يكون أحادي اللون</li>
+    <li>تُضاف الشوائب المختلفة خلال عملية تحضير أشباه النواقل لتحديد طول موجة الضوء المنبعث (تحدد الطول الموجي ولون الضوء المرئي)</li>
+  </ul>
+</div>
+
+<h3>③ الديود الضوئي (Photodiode)</h3>
+<div class="card">
+  <ul>
+    <li>أداة تعمل بانحياز عكسي، حيث يوجد تيار عكسي يزداد مع الضوء</li>
+    <li>يحتوي الديود الضوئي على نافذة صغيرة شفافة تسمح للضوء بضرب تقاطع pn</li>
+  </ul>
+</div>
+
+<h3>④ الديود الليزري (Laser Diode)</h3>
+<div class="card">
+  <ul>
+    <li>مصطلح "ليزر" يشير إلى تضخيم الضوء عن طريق تحفيز انبعاث الإشعاع</li>
+    <li>ضوء الليزر أحادي اللون (يتكون من لون واحد وليس مزيجاً من الألوان)</li>
+    <li>يُطلق عليه أيضاً "الضوء المتماسك"، وهو ذو طول موجة واحد، مقارنة بالضوء غير المترابط</li>
+  </ul>
+</div>
+
+<h3>⑤ ديود شوتكي (Schottky Diode)</h3>
+<div class="card">
+  <ul>
+    <li>ثنائيات تعمل على تيارات عالية وبتردد عالٍ من أجل التطبيقات التي تتطلب التبديل السريع</li>
+    <li>تُعرف أيضاً باسم الثنائيات الساخنة، أي مستوى الطاقة العالي للإلكترونات بمنطقة n مقارنة بتلك الموجودة بالمنطقة المعدنية</li>
+    <li>يتشكل ثنائي شوتكي عن طريق انضمام منطقة شبه الموصلات المنشطة (عادة من النوع n) بمعدن مثل الذهب أو الفضة أو البلاتين</li>
+    <li>بدلاً من تقاطع pn، يوجد تقاطع من معدن إلى شبه موصلات</li>
+    <li>عادة ما يكون انخفاض الجهد الأمامي حوالي <span class="key">0.3V</span> نظراً لعدم وجود منطقة استنزاف (كما هو الحال بتقاطع pn)</li>
+    <li>يعمل ثنائي شوتكي فقط مع النواقل الأكثرية (الأغلبية)، لا توجد ناقلات أقلية، وبالتالي لا يوجد تيار تسريب عكسي كما هو الحال بأنواع الثنائيات الأخرى</li>
+    <li>المنطقة المعدنية مُشبَّعة بشدة بإلكترونات نطاق التوصيل</li>
+  </ul>
+</div>
+
+<h3>⑥ الديود النفقي (Tunnel Diode)</h3>
+<div class="card">
+  <ul>
+    <li>يتميز الديود النفقي بخاصية تُعرف باسم <span class="key">المقاومة السلبية</span></li>
+    <li>هذه الميزة تجعله مفيداً بتطبيقات مذبذب ومكبر الصوت والميكروويف</li>
+    <li>يتم تصنيع ثنائيات النفق باستخدام الجرمانيوم أو زرنيخيد الغاليوم، عن طريق حقن مناطق p وn بكثافة أكبر بكثير من الثنائيات العادية</li>
+    <li>هذه الشوائب النشطة الثقيلة تؤدي لمنطقة استنزاف ضيقة للغاية</li>
+    <li>الشوائب الثقيلة تسمح بالتوصيل لجميع الجهود العكسية، بحيث لا يوجد أي تأثير للانهيار</li>
+    <li>المنطقة الضيقة للغاية للاستنزاف تسمح للإلكترونات بالمرور "بنفق" عبر تقاطع pn عند جهد أمامي منخفض جداً عندما يكون الثنائي منحازاً أمامياً</li>
+    <li>يعمل الثنائي بمثابة موصل بين المنطقتين عند هذه الحالة</li>
+  </ul>
+</div>
+
+<h2>8. جدول مقارنة أنواع الديودات الأخرى</h2>
+<div class="card">
+  <table>
+    <tr><th>النوع</th><th>الوظيفة الأساسية</th><th>حالة العمل</th></tr>
+    <tr><td>Zener</td><td>تنظيم/تثبيت الجهد</td><td>انحياز عكسي (منطقة الانهيار)</td></tr>
+    <tr><td>Varactor</td><td>مكثف متغير بالجهد</td><td>انحياز عكسي دائماً</td></tr>
+    <tr><td>LED</td><td>إصدار ضوء</td><td>انحياز أمامي</td></tr>
+    <tr><td>Photodiode</td><td>استشعار الضوء</td><td>انحياز عكسي</td></tr>
+    <tr><td>Laser Diode</td><td>ضوء متماسك (ليزر)</td><td>انحياز أمامي</td></tr>
+    <tr><td>Schottky</td><td>تبديل سريع بتردد عالٍ</td><td>معدن-شبه موصل (0.3V هبوط)</td></tr>
+    <tr><td>Tunnel</td><td>مذبذبات/مكبرات ميكروويف</td><td>مقاومة سالبة، نفق كمومي</td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — المحاضرة 5 | إلكترونيات · د. ابراهيم الأحمد</div>
+</div>
+
+<!-- ================= TAB 2: CHEATSHEET ================= -->
+<div class="tab-panel" id="tab-cheat">
+<div class="section-hero"><h2 class="hero-title">📋 ورقة الغش</h2><p>معادلات وقواعد فقط — بدون شرح</p><span class="badge amber">Cheat Sheet</span></div>
+
+<h2>مصطلحات تيار زينر</h2>
+<div class="card">
+  <table>
+    <tr><th>الرمز</th><th>المعنى</th></tr>
+    <tr><td>I<sub>ZK</sub></td><td>تيار ركبة زينر (أدنى تيار للتنظيم)</td></tr>
+    <tr><td>I<sub>ZM</sub></td><td>أقصى تيار زينر</td></tr>
+    <tr><td>I<sub>ZT</sub></td><td>تيار زينر الاختباري (منتصف المدى)</td></tr>
+    <tr><td>V<sub>Z</sub></td><td>جهد زينر الاسمي</td></tr>
+  </table>
+</div>
+
+<h2>معادلات زينر الأساسية</h2>
+<div class="card">
+  <div class="formula-box">
+    r_Z = ΔV_Z / ΔI_Z<br>
+    (مقاومة زينر)
+  </div>
+  <div class="formula-box">
+    ΔV_Z = ΔI_Z × r_Z<br>
+    V_Z(جديد) = V_Z ± ΔV_Z
+  </div>
+</div>
+
+<h2>معامل درجة الحرارة</h2>
+<div class="card">
+  <div class="formula-box">
+    ΔV_Z = V_Z × TC × ΔT<br>
+    V_Z(T) = V_Z + ΔV_Z
+  </div>
+  <table>
+    <tr><th>TC موجب</th><th>TC سالب</th></tr>
+    <tr><td>V_Z يزيد مع ↑ الحرارة</td><td>V_Z ينقص مع ↑ الحرارة</td></tr>
+  </table>
+</div>
+
+<h2>استطاعة زينر</h2>
+<div class="card">
+  <div class="formula-box">
+    P_Z = V_Z × I_Z<br>
+    P_D(max) = V_Z × I_ZM
+  </div>
+</div>
+
+<h2>جدول أنواع الديودات الأخرى — سريع</h2>
+<div class="card">
+  <table>
+    <tr><th>النوع</th><th>الاستخدام</th></tr>
+    <tr><td>Zener</td><td>تنظيم الجهد</td></tr>
+    <tr><td>Varactor</td><td>مكثف متغير (VCO, tuning)</td></tr>
+    <tr><td>LED</td><td>إصدار ضوء</td></tr>
+    <tr><td>Photodiode</td><td>كشف/استشعار الضوء</td></tr>
+    <tr><td>Laser Diode</td><td>ضوء متماسك أحادي اللون</td></tr>
+    <tr><td>Schottky</td><td>تبديل سريع، هبوط 0.3V</td></tr>
+    <tr><td>Tunnel</td><td>مقاومة سالبة، ميكروويف</td></tr>
+  </table>
+</div>
+
+<h2>مصطلحات إنجليزي ↔ عربي سريعة</h2>
+<div class="card">
+  <table>
+    <tr><td class="en">Zener Diode</td><td>ديود زينر</td></tr>
+    <tr><td class="en">Zener Breakdown</td><td>انهيار زينر</td></tr>
+    <tr><td class="en">Zener Regulation</td><td>تنظيم زينر</td></tr>
+    <tr><td class="en">Knee Current</td><td>تيار الركبة</td></tr>
+    <tr><td class="en">Temperature Coefficient</td><td>معامل درجة الحرارة</td></tr>
+    <tr><td class="en">Power Dissipation</td><td>تبديد الاستطاعة</td></tr>
+    <tr><td class="en">Power Derating</td><td>تخفيض الاستطاعة</td></tr>
+    <tr><td class="en">Varactor Diode</td><td>الديود السعوي</td></tr>
+    <tr><td class="en">Light-Emitting Diode (LED)</td><td>الديود الباعث للضوء</td></tr>
+    <tr><td class="en">Photodiode</td><td>الديود الضوئي</td></tr>
+    <tr><td class="en">Laser Diode</td><td>الديود الليزري</td></tr>
+    <tr><td class="en">Schottky Diode</td><td>ديود شوتكي</td></tr>
+    <tr><td class="en">Tunnel Diode</td><td>الديود النفقي</td></tr>
+    <tr><td class="en">Negative Resistance</td><td>المقاومة السالبة</td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — Cheat Sheet المحاضرة 5</div>
+</div>
+
+<!-- ================= TAB 3: QUESTIONS ================= -->
+<div class="tab-panel" id="tab-questions">
+<div class="section-hero"><h2 class="hero-title">🧠 بنك الأسئلة</h2><p>اختيار من متعدد · أسئلة مفتوحة · محاكاة امتحان</p></div>
+
+<div class="mini-toc">
+  <a href="#mcq5">① اختيار من متعدد (15 سؤال)</a>
+  <a href="#open5">② أسئلة مفتوحة (10 أسئلة)</a>
+  <a href="#exam5">③ محاكاة امتحان</a>
+</div>
+
+<div class="section-title" id="mcq5">① اختيار من متعدد</div>
+
+<div class="q-card">
+  <span class="q-num">1.</span> ديود زينر مصمم للعمل بشكل أساسي في:
+  <ul class="options"><li>a) الانحياز الأمامي</li><li>b) منطقة الانهيار العكسي</li><li>c) القطع التام</li><li>d) درجة حرارة الغرفة فقط</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">2.</span> ما تعريف تيار الركبة I_ZK؟
+  <ul class="options">
+    <li>a) أقصى تيار يتحمله الديود</li>
+    <li>b) أقل قيمة للتيار العكسي التي عندها يحافظ زينر على التنظيم</li>
+    <li>c) التيار الأمامي الاعتيادي</li>
+    <li>d) تيار القطع التام</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">3.</span> ماذا يحدث إذا تجاوز التيار قيمة I_ZM؟
+  <ul class="options"><li>a) يتحسن التنظيم</li><li>b) يتلف الديود بسبب ارتفاع الحرارة الزائد</li><li>c) لا شيء يتغير</li><li>d) ينخفض الجهد فقط</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">4.</span> ما معادلة مقاومة زينر r_Z؟
+  <ul class="options"><li>a) r_Z = V_Z × I_Z</li><li>b) r_Z = ΔV_Z / ΔI_Z</li><li>c) r_Z = V_Z / I_ZM</li><li>d) r_Z = ΔI_Z / ΔV_Z</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">5.</span> معامل درجة الحرارة الموجب (TC+) يعني:
+  <ul class="options">
+    <li>a) V_Z يزيد مع زيادة درجة الحرارة</li>
+    <li>b) V_Z ينقص مع زيادة درجة الحرارة</li>
+    <li>c) V_Z ثابت دائماً</li>
+    <li>d) لا علاقة بين V_Z ودرجة الحرارة</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">a</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">6.</span> ما معادلة الاستطاعة القصوى المبددة لثنائي زينر؟
+  <ul class="options"><li>a) P_D(max) = V_Z / I_ZM</li><li>b) P_D(max) = V_Z × I_ZM</li><li>c) P_D(max) = I_ZM²</li><li>d) P_D(max) = V_Z²</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">7.</span> أي ديود سعته تتغير حسب جهد الانحياز العكسي المطبق؟
+  <ul class="options"><li>a) LED</li><li>b) Photodiode</li><li>c) Varactor Diode</li><li>d) Schottky</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) Varactor Diode</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">8.</span> LED يعمل بانحياز:
+  <ul class="options"><li>a) عكسي</li><li>b) أمامي</li><li>c) لا يحتاج انحياز</li><li>d) متناوب</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) أمامي</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">9.</span> ما سبب انبعاث الضوء بديود LED؟
+  <ul class="options">
+    <li>a) تسخين المادة</li>
+    <li>b) إطلاق طاقة عند إعادة تركيب الإلكترونات مع الثقوب</li>
+    <li>c) الانهيار الحراري</li>
+    <li>d) التيار العكسي فقط</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">10.</span> ديود شوتكي يتميز بـ:
+  <ul class="options">
+    <li>a) هبوط جهد أمامي أعلى من العادي (1.2V)</li>
+    <li>b) هبوط جهد أمامي منخفض (0.3V) وتبديل سريع</li>
+    <li>c) عمل فقط بانحياز عكسي</li>
+    <li>d) استخدامه فقط بالإضاءة</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">11.</span> لماذا لا يوجد تيار تسريب عكسي بديود شوتكي؟
+  <ul class="options">
+    <li>a) لأنه لا يوجد جهد عكسي أصلاً</li>
+    <li>b) لأنه يعمل فقط بالنواقل الأغلبية، ولا توجد ناقلات أقلية</li>
+    <li>c) لأن سعته صغيرة جداً</li>
+    <li>d) لأنه مصنوع من الجرمانيوم</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">12.</span> ما الخاصية المميزة للديود النفقي (Tunnel Diode)؟
+  <ul class="options"><li>a) المقاومة الموجبة العالية</li><li>b) المقاومة السالبة</li><li>c) عدم التوصيل إطلاقاً</li><li>d) هبوط جهد صفري دائماً</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) المقاومة السالبة</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">13.</span> ما سبب قدرة الديود النفقي على التوصيل بجهد أمامي منخفض جداً؟
+  <ul class="options">
+    <li>a) منطقة استنزاف واسعة جداً</li>
+    <li>b) منطقة استنزاف ضيقة للغاية بسبب الشوائب الثقيلة</li>
+    <li>c) عدم وجود منطقة استنزاف إطلاقاً</li>
+    <li>d) استخدام معدن بدل شبه الموصل</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">14.</span> الديود الضوئي (Photodiode) يعمل بانحياز:
+  <ul class="options"><li>a) أمامي</li><li>b) عكسي</li><li>c) بدون انحياز</li><li>d) متناوب فقط</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) عكسي</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">15.</span> ما معنى "ضوء متماسك" (Coherent Light) بالديود الليزري؟
+  <ul class="options">
+    <li>a) ضوء بعدة أطوال موجية</li>
+    <li>b) ضوء بطول موجة واحد، على خلاف الضوء غير المترابط</li>
+    <li>c) ضوء خافت جداً</li>
+    <li>d) ضوء غير مرئي</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="section-title" id="open5">② أسئلة مفتوحة</div>
+
+<div class="q-card">
+  <p class="open-q"><b>1.</b> اشرح المبدأ الأساسي لعمل ديود زينر كمنظم للجهد.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">عندما يصل ديود زينر لمنطقة الانهيار العكسي، يبقى جهده ثابتاً تقريباً (V_Z) رغم التغيرات الكبيرة بالتيار المار خلاله. هذه الخاصية تجعله مناسباً لتثبيت الجهد على قيمة V_Z بغض النظر عن تغيرات التيار، طالما التيار محصور بين I_ZK وI_ZM.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>2.</b> ما الفرق بين I_ZK وI_ZM وI_ZT؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  I_ZK: أقل تيار عكسي يحافظ فيه زينر على التنظيم (تحت هذه القيمة يفقد الديود قدرته على التنظيم).<br>
+  I_ZM: أقصى تيار يمكن أن يتحمله الديود دون تلف حراري.<br>
+  I_ZT: تيار الاختبار الذي يُحدَّد عنده V_Z بمواصفات الديود، وهو تقريباً منتصف المدى بين I_ZK وI_ZM.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>3.</b> احسب مقاومة زينر إذا كانت ΔV_Z=80mV وΔI_Z=4mA.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">r_Z = ΔV_Z/ΔI_Z = 80mV/4mA = 20Ω</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>4.</b> ديود زينر 10V بمعامل درجة حرارة سالب −0.06%/°C. احسب جهد زينر عند 45°C.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  ΔV_Z = V_Z × TC × ΔT = 10 × (−0.0006) × (45−25) = 10 × (−0.0006) × 20 = −0.12V<br>
+  V_Z(45°C) = 10 − 0.12 = 9.88V</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>5.</b> إذا كان V_Z=5.1V وP_D(max)=400mW، احسب I_ZM.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">I_ZM = P_D(max)/V_Z = 0.4/5.1 ≈ 78.4mA</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>6.</b> اشرح كيف يعمل الديود السعوي (Varactor) كمكثف متغير.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">يعمل الديود السعوي دائماً بانحياز عكسي، مما يعطي منطقة استنزاف تتغير عرضاً حسب مقدار الجهد العكسي المطبق. منطقة الاستنزاف تعمل كعازل (لوح بين لوحين)، ومنطقتا p وn تعملان كلوحي مكثف. بتغيير الجهد العكسي، يتغير عرض منطقة الاستنزاف وبالتالي تتغير السعة الكلية للديود.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>7.</b> ما الفرق الأساسي بين تركيب ديود شوتكي وتركيب الديود العادي (pn junction)؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">الديود العادي يتكون من تقاطع pn (شبه موصل بشبه موصل). أما ديود شوتكي فيتكون من تقاطع معدن-شبه موصل (انضمام منطقة شبه موصل نوع n بمعدن مثل الذهب أو الفضة أو البلاتين)، ولا يحتوي منطقة استنزاف مثل تقاطع pn التقليدي، لذا هبوط جهده الأمامي أقل (0.3V) ولا يوجد تيار تسريب عكسي.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>8.</b> لماذا يُعتبر ديود شوتكي مناسباً للتطبيقات عالية التردد؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">لأنه لا يحتوي على ناقلات أقلية (يعمل فقط بالناقلات الأكثرية)، وبالتالي لا تحدث عملية تخزين شحنة (Charge Storage) بمنطقة الاستنزاف كما بالديودات العادية، مما يسمح له بالتبديل (التحول بين ON وOFF) بسرعة عالية جداً دون تأخير، وهذا مناسب للتطبيقات عالية التردد وسريعة التبديل.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>9.</b> ما الخاصية الفيزيائية بالديود النفقي التي تسمح للإلكترونات بـ"عبور النفق"؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">الشوائب الثقيلة جداً (أعلى بكثير من الديودات العادية) المضافة لمناطق p وn تؤدي لمنطقة استنزاف ضيقة للغاية، ضيقة بما يكفي للسماح للإلكترونات بالمرور "نفقياً" (Quantum Tunneling) عبر تقاطع pn حتى عند جهد أمامي منخفض جداً، بدل الحاجة لتجاوز الحاجز الجهدي بالطريقة التقليدية.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>10.</b> عدد ستة أنواع من الديودات (غير الديود العادي وزينر) واذكر تطبيقاً رئيسياً لكل منها.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  Varactor: مكثف متغير بالجهد (دارات ضبط التردد).<br>
+  LED: إصدار الضوء (شاشات، إنارة).<br>
+  Photodiode: استشعار/كشف الضوء.<br>
+  Laser Diode: إصدار ضوء متماسك أحادي اللون (بصريات، اتصالات ضوئية).<br>
+  Schottky: تبديل سريع بتردد عالٍ (دارات رقمية سريعة).<br>
+  Tunnel: مذبذبات ومكبرات ميكروويف (مقاومة سالبة).</div></details>
+</div>
+
+<div class="section-title" id="exam5">③ محاكاة امتحان</div>
+<div class="q-card">
+  <span class="exam-badge">⏱ محاكاة — 25 دقيقة</span>
+  <p style="font-size:.9rem; color:var(--muted)">أجب بدون فتح الملخص. راجع الأجوبة بالنهاية فقط.</p>
+
+  <p class="open-q"><b>س1 (4 علامات):</b> عرّف: تيار الركبة I_ZK، جهد زينر الاسمي V_Z، مقاومة زينر r_Z.</p>
+  <p class="open-q"><b>س2 (5 علامات):</b> ثنائي زينر 15V (عند 25°C) بمعامل درجة حرارة سالب −0.08%/°C. احسب جهد زينر عند 70°C.</p>
+  <p class="open-q"><b>س3 (5 علامات):</b> زينر بمقاومة r_Z=4Ω، وV_Z=9.1V عند تيار اختباري I_ZT=20mA. احسب V_Z عند I_Z=35mA وعند I_Z=10mA.</p>
+  <p class="open-q"><b>س4 (4 علامات):</b> قارن بين طريقة عمل LED والديود الضوئي (Photodiode) من حيث نوع الانحياز والوظيفة.</p>
+  <p class="open-q"><b>س5 (4 علامات):</b> اشرح لماذا يمتلك ديود شوتكي هبوط جهد أمامي أقل من الديود العادي.</p>
+  <p class="open-q"><b>س6 (3 علامات):</b> ما الخاصية الفريدة للديود النفقي وما سبب حدوثها فيزيائياً؟</p>
+
+  <details><summary>📖 عرض نموذج الحل الكامل</summary>
+  <div class="answer-box">
+  <b>س1:</b> I_ZK: أقل تيار عكسي يحافظ به زينر على التنظيم. V_Z: الجهد الذي يثبت عنده الديود بمنطقة الانهيار (بمواصفات عند تيار اختباري معين). r_Z: مقاومة زينر الداخلية = ΔV_Z/ΔI_Z، تحدد مقدار تغير الجهد مع تغير التيار.<br><br>
+  <b>س2:</b> ΔV_Z = 15 × (−0.0008) × (70−25) = 15 × (−0.0008) × 45 = −0.54V<br>
+  V_Z(70°C) = 15 − 0.54 = 14.46V<br><br>
+  <b>س3:</b> عند I_Z=35mA: ΔI_Z=+15mA → ΔV_Z=15×4=60mV → V_Z=9.1+0.06=9.16V<br>
+  عند I_Z=10mA: ΔI_Z=−10mA → ΔV_Z=−10×4=−40mV → V_Z=9.1−0.04=9.06V<br><br>
+  <b>س4:</b> LED يعمل بانحياز أمامي ويصدر ضوء عند إعادة تركيب الإلكترونات والثقوب. الديود الضوئي يعمل بانحياز عكسي، حيث يزداد التيار العكسي المار به مع شدة الضوء الساقط عليه (وظيفة معاكسة: LED يُصدر، Photodiode يستقبل/يستشعر).<br><br>
+  <b>س5:</b> لأن ديود شوتكي يتكون من تقاطع معدن-شبه موصل بدل تقاطع pn التقليدي، ولا توجد منطقة استنزاف بنفس الطريقة، فهبوط الجهد الأمامي المطلوب أقل (حوالي 0.3V) مقارنة بـ0.7V للديود السيليكوني العادي.<br><br>
+  <b>س6:</b> الخاصية: المقاومة السالبة. السبب: الشوائب الثقيلة جداً بمناطق p وn تنتج منطقة استنزاف ضيقة للغاية، تسمح للإلكترونات بعبور النفق الكمومي عبر تقاطع pn عند جهد أمامي منخفض جداً.
+  </div></details>
+</div>
+
+<div class="footer">CTS Prep Series — بنك أسئلة المحاضرة 5</div>
+</div>
+
+<!-- ================= TAB 4: FLASHCARDS ================= -->
+<div class="tab-panel" id="tab-flash">
+<div class="section-hero"><h2 class="hero-title">⚡ بطاقات المراجعة</h2><p>اضغط البطاقة لقلبها وعرض الجواب</p></div>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+<div class="counter" id="counter">1 / 20</div>
+
+<div class="flashcard-wrap">
+  <div class="flashcard" id="flashcard" onclick="flipCard()">
+    <div class="face front">
+      <div class="q-label">سؤال</div>
+      <div class="q-text" id="qText"></div>
+      <div class="tap-hint">👆 اضغط لعرض الجواب</div>
+    </div>
+    <div class="face back">
+      <div class="a-label">جواب</div>
+      <div class="a-text" id="aText"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fc-controls">
+  <button class="btn btn-prev" onclick="prevCard()">◀ السابق</button>
+  <button class="btn btn-shuffle" onclick="shuffleCards()">🔀</button>
+  <button class="btn btn-next" onclick="nextCard()">التالي ▶</button>
+</div>
+</div>
+
+<div class="footer">CTS Prep Series — المحاضرة 5 (موحدة) | إلكترونيات</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+const cards = [
+  {q:"ما الرمز الذي يميز ديود زينر؟", a:"خط متعرج بالرمز يُذكِّر بالحرف Z."},
+  {q:"في أي منطقة يعمل ديود زينر بشكل أساسي؟", a:"منطقة الانهيار العكسي (بدون تلف، مصمم لذلك)."},
+  {q:"ما تعريف تيار الركبة I_ZK؟", a:"أقل قيمة للتيار العكسي التي عندها يحافظ زينر على التنظيم."},
+  {q:"ماذا يحدث إذا تجاوز التيار I_ZM؟", a:"يتلف الديود بسبب ارتفاع درجة الحرارة عن الحد الأقصى المتحمل."},
+  {q:"ما معادلة مقاومة زينر؟", a:"r_Z = ΔV_Z / ΔI_Z"},
+  {q:"ماذا يعني معامل درجة حرارة موجب (TC+)؟", a:"جهد زينر V_Z يزيد مع زيادة درجة الحرارة، أو ينقص مع انخفاضها."},
+  {q:"ما معادلة حساب تغير جهد زينر مع درجة الحرارة؟", a:"ΔV_Z = V_Z × TC × ΔT"},
+  {q:"ما معادلة استطاعة زينر المبددة؟", a:"P_Z = V_Z × I_Z"},
+  {q:"ما معادلة الاستطاعة القصوى المبددة لزينر؟", a:"P_D(max) = V_Z × I_ZM"},
+  {q:"ما هو الديود السعوي (Varactor)؟", a:"ديود تتغير سعته حسب جهد الانحياز العكسي المطبق عليه، يعمل دائماً بانحياز عكسي."},
+  {q:"بأي حالة انحياز يعمل LED؟", a:"انحياز أمامي — تُطلق طاقة على شكل فوتونات عند إعادة تركيب الإلكترونات مع الثقوب."},
+  {q:"بأي حالة انحياز يعمل الديود الضوئي (Photodiode)؟", a:"انحياز عكسي — التيار العكسي يزداد مع شدة الضوء الساقط."},
+  {q:"ما معنى الضوء المتماسك (Coherent Light) بالديود الليزري؟", a:"ضوء بطول موجة واحد فقط (أحادي اللون)، على خلاف الضوء غير المترابط."},
+  {q:"ما هبوط الجهد الأمامي التقريبي بديود شوتكي؟", a:"حوالي 0.3V (أقل من الديود العادي 0.7V) بسبب تقاطع معدن-شبه موصل."},
+  {q:"لماذا لا يوجد تيار تسريب عكسي بديود شوتكي؟", a:"لأنه يعمل فقط بالنواقل الأكثرية (الأغلبية)، ولا توجد ناقلات أقلية."},
+  {q:"ما الخاصية المميزة للديود النفقي (Tunnel Diode)؟", a:"المقاومة السالبة — مفيدة بتطبيقات المذبذبات والمكبرات والميكروويف."},
+  {q:"ما سبب قدرة الديود النفقي على التوصيل بجهد منخفض جداً؟", a:"شوائب ثقيلة جداً تنتج منطقة استنزاف ضيقة للغاية، تسمح بعبور النفق الكمومي للإلكترونات."},
+  {q:"من أي مادتين يُصنع الديود النفقي عادة؟", a:"الجرمانيوم أو زرنيخيد الغاليوم."},
+  {q:"إذا كان V_Z=6.8V وΔV_Z=45.5mV بزيادة تيار، فما V_Z الجديد؟", a:"V_Z = 6.8 + 0.0455 = 6.845V ≈ 6.85V"},
+  {q:"ما تعريف تيار زينر الاختباري I_ZT؟", a:"قيمة التيار العكسي التي عندها يُحدَّد جهد زينر الاسمي V_Z بمواصفات الديود، وهي تقريباً منتصف المدى بين I_ZK وI_ZM."}
+];
+
+let currentIndex = 0;
+let isFlipped = false;
+
+function renderCard(){
+  document.getElementById('qText').textContent = cards[currentIndex].q;
+  document.getElementById('aText').textContent = cards[currentIndex].a;
+  document.getElementById('counter').textContent = (currentIndex+1) + ' / ' + cards.length;
+  document.getElementById('progressFill').style.width = ((currentIndex+1)/cards.length*100) + '%';
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+  isFlipped = false;
+}
+
+function flipCard(){
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard(){
+  currentIndex = (currentIndex + 1) % cards.length;
+  renderCard();
+}
+
+function prevCard(){
+  currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+  renderCard();
+}
+
+function shuffleCards(){
+  for(let i = cards.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  currentIndex = 0;
+  renderCard();
+}
+
+renderCard();
+</script>
+
+</body>
+</html>

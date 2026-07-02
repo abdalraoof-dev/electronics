@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحاضرة 1 — مدخل في الالكترونيات | CTS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#0D1117; --card:#161B22; --border:#2D3440;
+  --blue:#2563EB; --amber:#E8A000; --white:#E2E8F0; --muted:#8B96A5;
+  --green:#22c55e; --red:#ef4444;
+}
+*{box-sizing:border-box}
+html,body{margin:0; padding:0}
+body{
+  background:var(--bg); color:var(--white);
+  font-family:'Tajawal','Segoe UI',sans-serif; line-height:1.9;
+  padding-bottom:70px;
+}
+.en, .mono{font-family:'JetBrains Mono',monospace; color:#93c5fd; direction:ltr}
+
+/* ===== Sticky top header ===== */
+.top-header{
+  position:sticky; top:0; z-index:100;
+  background:linear-gradient(135deg,#12213f,#0D1117);
+  border-bottom:1px solid var(--blue);
+  padding:14px 16px 0;
+  text-align:center;
+}
+.top-header h1{color:var(--amber); margin:0 0 3px; font-size:1.2rem}
+.top-header p{color:var(--muted); margin:0 0 12px; font-size:.8rem}
+
+/* ===== Tab nav ===== */
+.tabs{
+  display:flex; gap:6px; overflow-x:auto; padding:0 10px 10px;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  flex:0 0 auto; background:var(--card); color:var(--muted);
+  border:1px solid var(--border); border-radius:20px;
+  padding:8px 16px; font-family:'Tajawal'; font-size:.85rem; font-weight:700;
+  cursor:pointer; white-space:nowrap; transition:.2s;
+}
+.tab-btn.active{background:var(--blue); color:#fff; border-color:var(--blue)}
+
+.content-wrap{padding:16px 14px 10px; max-width:600px; margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ===== Shared component styles ===== */
+h2{
+  color:var(--blue); font-size:1.15rem; border-right:4px solid var(--amber);
+  padding-right:10px; margin-top:34px; margin-bottom:10px;
+}
+h3{color:var(--amber); font-size:1rem; margin-top:20px; margin-bottom:8px}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:14px 16px; margin-bottom:14px;
+}
+ul{margin:8px 0; padding-right:20px}
+li{margin-bottom:6px}
+.key{color:var(--amber); font-weight:700}
+.formula{
+  background:#0A0E14; border:1px dashed var(--blue); border-radius:8px;
+  padding:10px 14px; text-align:center; font-family:'JetBrains Mono',monospace;
+  color:#93c5fd; margin:10px 0; font-size:1rem; direction:ltr;
+}
+table{width:100%; border-collapse:collapse; margin:10px 0; font-size:.9rem}
+th,td{border:1px solid var(--border); padding:8px 10px; text-align:center}
+th{background:#1c2532; color:var(--amber)}
+.note{
+  background:#1c1508; border-right:4px solid var(--amber); border-radius:8px;
+  padding:10px 14px; margin:12px 0; font-size:.9rem;
+}
+.imp{
+  background:#0e1c2b; border-right:4px solid var(--blue); border-radius:8px;
+  padding:10px 14px; margin:12px 0; font-size:.9rem;
+}
+.compare-grid{display:flex; flex-direction:column; gap:10px}
+.compare-item{background:#0f1420; border-radius:10px; padding:10px 14px; border:1px solid var(--border)}
+.compare-item .title{color:var(--amber); font-weight:700; margin-bottom:4px}
+
+/* Section badge inside summary tab */
+.section-hero{
+  text-align:center; padding:16px 14px; border-radius:14px;
+  background:linear-gradient(135deg,#12213f,#0D1117);
+  border:1px solid var(--blue); margin-bottom:18px;
+}
+.section-hero h2.hero-title{
+  color:var(--amber); margin:0 0 4px; font-size:1.2rem; border:none; padding:0;
+}
+.section-hero p{color:var(--muted); margin:0; font-size:.85rem}
+.badge{
+  display:inline-block; background:var(--blue); color:#fff;
+  padding:3px 12px; border-radius:20px; font-size:.75rem; margin-top:8px;
+}
+.badge.amber{background:var(--amber); color:#000}
+
+/* Cheatsheet specific */
+.formula-box{
+  background:#0A0E14; border:1px solid var(--blue); border-radius:8px;
+  padding:10px 12px; margin:8px 0; font-family:'JetBrains Mono',monospace;
+  color:#93c5fd; direction:ltr; text-align:center; font-size:1.05rem;
+}
+.formula-label{color:var(--amber); font-family:'Tajawal'; direction:rtl; font-size:.82rem; margin-bottom:4px; display:block}
+.tag{
+  display:inline-block; background:var(--blue); color:#fff; font-size:.7rem;
+  padding:1px 8px; border-radius:10px; margin-inline-end:4px;
+}
+.tag.p{background:#7c3aed}
+.tag.n{background:#059669}
+
+/* Questions specific */
+.q-card{
+  background:var(--card); border:1px solid var(--border); border-radius:10px;
+  padding:12px 14px; margin-bottom:12px;
+}
+.q-num{color:var(--amber); font-weight:700; margin-left:4px}
+.options{list-style:none; padding:0; margin:8px 0 0}
+.options li{
+  padding:7px 10px; margin-bottom:6px; border-radius:8px;
+  background:#0f1420; border:1px solid var(--border); font-size:.92rem;
+}
+details{margin-top:6px}
+summary{cursor:pointer; color:var(--blue); font-size:.85rem; font-weight:700; padding:4px 0}
+.answer-box{
+  margin-top:6px; background:#0a1f14; border-right:3px solid var(--green);
+  padding:8px 10px; border-radius:6px; font-size:.88rem;
+}
+.correct{color:var(--green); font-weight:700}
+.open-q{font-size:.95rem; margin-bottom:4px}
+.exam-badge{
+  display:inline-block; background:var(--amber); color:#000; font-size:.7rem;
+  padding:2px 10px; border-radius:10px; font-weight:700; margin-bottom:8px;
+}
+.section-title{
+  background:var(--blue); color:#fff; padding:8px 14px; border-radius:10px;
+  font-size:1.05rem; margin-top:26px; margin-bottom:12px; text-align:center;
+}
+.mini-toc{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px; margin-bottom:18px}
+.mini-toc a{color:var(--blue); display:block; padding:4px 0; text-decoration:none; font-size:.9rem}
+
+/* Flashcards specific */
+.progress{
+  width:100%; background:var(--card); border-radius:20px;
+  height:8px; margin-bottom:16px; overflow:hidden; border:1px solid var(--border);
+}
+.progress-fill{height:100%; background:var(--blue); width:0%; transition:width .3s}
+.counter{color:var(--muted); font-size:.85rem; margin-bottom:10px; text-align:center}
+.flashcard-wrap{width:100%; perspective:1200px; margin-bottom:16px}
+.flashcard{
+  position:relative; width:100%; min-height:230px;
+  transform-style:preserve-3d; transition:transform .5s; cursor:pointer;
+}
+.flashcard.flipped{transform:rotateY(180deg)}
+.face{
+  position:absolute; inset:0; backface-visibility:hidden;
+  border-radius:16px; padding:22px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center;
+  border:1px solid var(--border);
+}
+.front{background:linear-gradient(135deg,#161B22,#0D1117); border-color:var(--blue)}
+.back{
+  background:linear-gradient(135deg,#1c1508,#161B22); border-color:var(--amber);
+  transform:rotateY(180deg); font-size:.98rem; line-height:1.7;
+}
+.q-label, .a-label{
+  font-size:.7rem; color:var(--muted); text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;
+}
+.q-text{font-size:1.1rem; font-weight:700; color:var(--white)}
+.a-text{color:var(--white)}
+.tap-hint{position:absolute; bottom:10px; font-size:.7rem; color:var(--muted)}
+.fc-controls{display:flex; gap:10px; width:100%}
+.btn{
+  flex:1; padding:12px; border-radius:10px; border:none; font-size:.95rem;
+  font-family:'Tajawal'; font-weight:700; cursor:pointer;
+}
+.btn-prev{background:var(--card); color:var(--white); border:1px solid var(--border)}
+.btn-next{background:var(--blue); color:#fff}
+.btn-shuffle{background:var(--amber); color:#000; flex:0 0 auto; padding:12px 16px}
+
+.footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:40px}
+</style>
+
+<style>
+/* ===== Floating Lecture Navigator (injected) ===== */
+.lecnav-fab{
+  position:fixed; bottom:18px; left:18px; z-index:999;
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg,#2563EB,#1d4ed8);
+  color:#fff; border:none; box-shadow:0 4px 14px rgba(37,99,235,.5);
+  font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:transform .2s;
+}
+.lecnav-fab:active{transform:scale(.92)}
+.lecnav-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000;
+  display:none; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.lecnav-overlay.open{display:flex}
+.lecnav-sheet{
+  width:100%; max-width:600px; background:#161B22; border:1px solid #2D3440;
+  border-bottom:none; border-radius:20px 20px 0 0; padding:16px 14px 26px;
+  max-height:80vh; overflow-y:auto; animation:lecnavUp .25s ease;
+  font-family:'Tajawal','Segoe UI',sans-serif;
+}
+@keyframes lecnavUp{from{transform:translateY(30px); opacity:0} to{transform:translateY(0); opacity:1}}
+.lecnav-sheet h3{
+  color:#E8A000; margin:0 0 12px; font-size:1.05rem; text-align:center;
+  border:none; padding:0;
+}
+.lecnav-home{
+  display:block; text-align:center; color:#93c5fd; text-decoration:none;
+  font-size:.85rem; margin-bottom:14px; padding:8px; border:1px dashed #2D3440;
+  border-radius:10px;
+}
+.lecnav-list{display:flex; flex-direction:column; gap:8px}
+.lecnav-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-radius:12px; background:#0f1420; border:1px solid #2D3440;
+  color:#E2E8F0; text-decoration:none; font-size:.9rem; transition:.15s;
+}
+.lecnav-item:active{background:#1c2532}
+.lecnav-item.current{border-color:#2563EB; background:#0e1c2b}
+.lecnav-item .lecnav-num{
+  flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+  background:#2563EB; color:#fff; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:.85rem; font-family:'JetBrains Mono',monospace;
+}
+.lecnav-item.current .lecnav-num{background:#E8A000; color:#000}
+.lecnav-item .lecnav-title{flex:1}
+.lecnav-close{
+  position:absolute; top:10px; left:14px; background:none; border:none;
+  color:#8B96A5; font-size:1.3rem; cursor:pointer; padding:4px 8px;
+}
+.lecnav-sheet{position:relative}
+</style>
+
+</head>
+<body>
+
+<!-- ===== Floating Lecture Navigator (injected) ===== -->
+<button class="lecnav-fab" id="lecnavFab" onclick="document.getElementById('lecnavOverlay').classList.add('open')" aria-label="التنقل بين المحاضرات">☰</button>
+<div class="lecnav-overlay" id="lecnavOverlay" onclick="if(event.target===this) this.classList.remove('open')">
+  <div class="lecnav-sheet">
+    <button class="lecnav-close" onclick="document.getElementById('lecnavOverlay').classList.remove('open')">✕</button>
+    <h3>📚 التنقل بين المحاضرات</h3>
+    <a class="lecnav-home" href="index.html">⌂ العودة للفهرس الرئيسي</a>
+    <div class="lecnav-list">
+  <a class="lecnav-item current" href="lecture1.html"><span class="lecnav-num">1</span><span class="lecnav-title">مدخل في الالكترونيات</span></a>
+  <a class="lecnav-item" href="lecture2.html"><span class="lecnav-num">2</span><span class="lecnav-title">الديودات (الثنائيات)</span></a>
+  <a class="lecnav-item" href="lecture3.html"><span class="lecnav-num">3</span><span class="lecnav-title">الدارة الأساسية والمقومات</span></a>
+  <a class="lecnav-item" href="lecture4.html"><span class="lecnav-num">4</span><span class="lecnav-title">المرشحات والمحددات ومضاعفات الجهد</span></a>
+  <a class="lecnav-item" href="lecture5.html"><span class="lecnav-num">5</span><span class="lecnav-title">ديود زينر وأنواع الديودات الأخرى</span></a>
+  <a class="lecnav-item" href="lecture6.html"><span class="lecnav-num">6</span><span class="lecnav-title">الترانزستور BJT</span></a>
+  <a class="lecnav-item" href="lecture7.html"><span class="lecnav-num">7</span><span class="lecnav-title">منحنيات المجمع ومناطق عمل الترانزستور</span></a>
+    </div>
+  </div>
+</div>
+
+
+<div class="top-header">
+  <h1>⚡ المحاضرة 1 — مدخل في الالكترونيات</h1>
+  <p>Introduction to Electronics · د. ابراهيم الأحمد</p>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary">📘 ملخص</button>
+    <button class="tab-btn" data-tab="cheat">📋 ورقة غش</button>
+    <button class="tab-btn" data-tab="questions">🧠 أسئلة</button>
+    <button class="tab-btn" data-tab="flash">⚡ بطاقات</button>
+  </div>
+</div>
+
+<div class="content-wrap">
+
+<!-- ================= TAB 1: SUMMARY ================= -->
+<div class="tab-panel active" id="tab-summary">
+<div class="section-hero"><h2 class="hero-title">📘 الملخص المكثف</h2><p>كل النقاط الأساسية — منظمة بالترتيب</p></div>
+<h2>1. بنية الذرة (Atom Structure)</h2>
+<div class="card">
+  <ul>
+    <li>المادة = جزيئات → المادة الأصغر منها = <span class="key">ذرات (Atoms)</span></li>
+    <li>الذرة = <span class="key">نواة (Nucleus)</span> + إلكترونات تدور حولها بمدارات</li>
+    <li>النواة تحتوي:
+      <ul>
+        <li><span class="key">بروتونات (Protons)</span> → شحنة موجبة</li>
+        <li><span class="key">نيوترونات (Neutrons)</span> → متعادلة الشحنة</li>
+      </ul>
+    </li>
+    <li><span class="key">إلكترونات (Electrons)</span> → شحنة سالبة، تدور بمدارات ثابتة حول النواة</li>
+    <li>كل عنصر بالجدول الدوري له عدد بروتونات مختلف = هوية العنصر (العدد الذري)</li>
+  </ul>
+</div>
+
+<h2>2. نموذج بور الذري (Bohr Model)</h2>
+<div class="card">
+  <ul>
+    <li>الإلكترونات تدور بمسارات دائرية محددة تسمى <span class="key">أغلفة (Shells)</span> أو <span class="key">مستويات طاقة (Energy Levels)</span></li>
+    <li>العدد الذري = عدد البروتونات في النواة</li>
+    <li>الغلاف الخارجي = <span class="key">غلاف التكافؤ (Valence Shell)</span></li>
+    <li>الإلكترونات فيه = <span class="key">إلكترونات التكافؤ (Valence Electrons)</span></li>
+  </ul>
+  <h3>قانون العدد الأعظمي للإلكترونات بكل مدار</h3>
+  <div class="formula">Ne = 2n²</div>
+  <table>
+    <tr><th>رقم المدار n</th><th>الحساب</th><th>العدد الأعظمي</th></tr>
+    <tr><td>1</td><td>2(1)²</td><td>2</td></tr>
+    <tr><td>2</td><td>2(2)²</td><td>8</td></tr>
+    <tr><td>3</td><td>2(3)²</td><td>18</td></tr>
+  </table>
+  <div class="note">⚠️ قاعدة مهمة: عدد إلكترونات <b>مدار التكافؤ (الأخير)</b> لا يتجاوز <b>8</b> مهما كان قانون 2n² يعطي أكثر.</div>
+</div>
+
+<h2>3. إلكترونات التكافؤ (Valence Electrons)</h2>
+<div class="card">
+  <ul>
+    <li>كل ما بعدت الإلكترونات عن النواة ← طاقتها أعلى وارتباطها بالذرة أضعف (لأن قوة الجذب بين الشحنات المتضادة تتناقص مع المسافة)</li>
+    <li>مقدرة المادة على التوصيل تعتمد على قوة ارتباط إلكترونات التكافؤ بالنواة</li>
+    <li>لو اكتسب إلكترون التكافؤ طاقة كافية من مصدر خارجي → يتحرر ويصبح <span class="key">إلكترون حر</span> → هذا أساس التوصيل الكهربائي بالمواد</li>
+  </ul>
+</div>
+
+<h2>4. تصنيف المواد حسب التوصيل الكهربائي</h2>
+<div class="card compare-grid">
+  <div class="compare-item">
+    <div class="title">① النواقل / الموصلات <span class="en">Conductors</span></div>
+    توصّل التيار بسهولة. إلكترونات التكافؤ حرة الحركة (ارتباط ضعيف جداً).<br>
+    أمثلة: نحاس <span class="en">Cu</span>، فضة <span class="en">Ag</span>، ذهب <span class="en">Au</span>، ألومنيوم <span class="en">Al</span>.<br>
+    <span class="key">في الموصلات: الإلكترونات الحرة = إلكترونات التكافؤ</span>
+  </div>
+  <div class="compare-item">
+    <div class="title">② العوازل <span class="en">Insulators</span></div>
+    لا يمر فيها التيار بالظروف العادية. إلكترونات التكافؤ مرتبطة بقوة بالذرة → عدد قليل جداً من الإلكترونات الحرة.<br>
+    أمثلة: مطاط، بلاستيك، زجاج، ميكا، كوارتز.<br>
+    تُخترق فقط عند <span class="key">الانهيار (Breakdown)</span> بجهد عالٍ جداً.
+  </div>
+  <div class="compare-item">
+    <div class="title">③ أشباه الموصلات <span class="en">Semiconductors</span></div>
+    بين الموصل والعازل. بحالتها النقية: لا موصل جيد ولا عازل جيد.<br>
+    أحادية العنصر: أنتيمون <span class="en">Sb</span>، زرنيخ <span class="en">As</span>، سيليكون <span class="en">Si</span>، جرمانيوم <span class="en">Ge</span>.<br>
+    <span class="key">كلها لها 4 إلكترونات تكافؤ</span>. السيليكون الأكثر استخداماً.
+  </div>
+</div>
+
+<h2>5. الحزم الطاقية وفجوة النطاق (Energy Bands & Band Gap)</h2>
+<div class="card">
+  <ul>
+    <li><span class="key">حزمة/نطاق التكافؤ (Valence Band)</span> = الطبقة السفلى، تحوي إلكترونات التكافؤ</li>
+    <li><span class="key">حزمة/نطاق التوصيل (Conduction Band)</span> = فوق حزمة التكافؤ مباشرة، تحوي الإلكترونات الحرة</li>
+    <li><span class="key">فجوة النطاق (Band Gap)</span> = المنطقة الفاصلة (المحرّمة) بين الحزمتين — لا يمكن لإلكترون التواجد فيها</li>
+    <li><span class="key">عرض النطاق</span> = الفرق بالطاقة بين مستوى التكافؤ ومستوى التوصيل (يسمى أيضاً نطاق المنع/المحرّم)</li>
+  </ul>
+  <h3>مقارنة الفجوة حسب نوع المادة</h3>
+  <table>
+    <tr><th>المادة</th><th>حجم الفجوة</th><th>التداخل بين النطاقين</th></tr>
+    <tr><td>عازل</td><td>كبيرة جداً</td><td>لا يوجد</td></tr>
+    <tr><td>شبه موصل</td><td>صغيرة</td><td>لا يوجد (لكن يمكن القفز)</td></tr>
+    <tr><td>موصل</td><td>لا توجد فجوة</td><td>Overlap — تداخل تام</td></tr>
+  </table>
+  <div class="imp">💡 بالموصلات: نطاق التوصيل ونطاق التكافؤ متداخلان (Overlap) → دائماً يوجد إلكترونات حرة متاحة.</div>
+</div>
+
+<h2>6. السيليكون والجرمانيوم</h2>
+<div class="card">
+  <ul>
+    <li>كلاهما 4 إلكترونات تكافؤ</li>
+    <li>الجرمانيوم <span class="en">Ge</span>: إلكترونات التكافؤ بالغلاف <span class="key">الرابع</span></li>
+    <li>السيليكون <span class="en">Si</span>: إلكترونات التكافؤ بالغلاف <span class="key">الثالث</span> (أقرب للنواة)</li>
+    <li>⇐ الجرمانيوم إلكتروناته بطاقة أعلى → يتحرر بسهولة أكبر → غير مستقر بدرجات الحرارة العالية → تيار عكسي أكبر</li>
+    <li>⇐ لهيك <span class="key">السيليكون هو المستخدم على نطاق واسع</span> (أكثر استقراراً حرارياً)</li>
+  </ul>
+</div>
+
+<h2>7. الإلكترونات التوصيلية والثقوب (Conduction Electrons & Holes)</h2>
+<div class="card">
+  <ul>
+    <li>بدرجة حرارة الغرفة، بعض إلكترونات التكافؤ بالسيليكون النقي تكتسب طاقة حرارية كافية للقفز فوق الفجوة → تصبح <span class="key">إلكترونات حرة (إلكترونات توصيل)</span></li>
+    <li>لما يقفز الإلكترون، يترك مكان فارغ اسمه <span class="key">ثقب (Hole)</span> بنطاق التكافؤ</li>
+    <li>الثقب = شحنة موجبة ظاهرية (الذرة لم تتحرك، فقط فقدت إلكترون)</li>
+    <li><span class="key">إعادة التركيب (Recombination)</span>: عندما يفقد إلكترون التوصيل طاقته وينخفض ليملأ ثقب بنطاق التكافؤ</li>
+    <li>بالسيليكون النقي بدرجة حرارة الغرفة: عدد الإلكترونات الحرة = عدد الثقوب (متساوٍ) — لأنهما ينتجان معاً كزوج <span class="en">electron-hole pair</span></li>
+  </ul>
+</div>
+
+<h2>8. تيار الإلكترون وتيار الثقب</h2>
+<div class="card">
+  <ul>
+    <li>عند تطبيق جهد على قطعة سيليكون:</li>
+    <li><span class="key">تيار الإلكترون</span>: حركة الإلكترونات الحرة بنطاق التوصيل نحو القطب الموجب</li>
+    <li><span class="key">تيار الثقب</span>: إلكترون تكافؤ مجاور "يقفز" لملء ثقب قريب → يترك مكانه ثقب جديد → الثقب "ينتقل" بالاتجاه المعاكس لحركة الإلكترون</li>
+    <li>عملياً: تيار الثقب ناتج بالحقيقة عن حركة إلكترونات التكافؤ، لكن سمي "تيار ثقب" لتمييزه عن تيار الإلكترون بنطاق التوصيل</li>
+  </ul>
+  <div class="imp">📌 خلاصة: التوصيل بأشباه الموصلات = حركة إلكترونات حرة بنطاق التوصيل <b>+</b> حركة ثقوب بنطاق التكافؤ (بالاتجاه المعاكس).</div>
+</div>
+
+<h2>9. أشباه الموصلات نوع N و نوع P (التطعيم/Doping)</h2>
+<div class="card">
+  <p>السيليكون النقي ضعيف التوصيل → يتم "تطعيمه" (<span class="en">Doping</span>) بإضافة شوائب لزيادة حاملات الشحنة. هذه العملية تسمى <span class="key">المنشطات أو الحقن</span>.</p>
+</div>
+
+<h3>◆ النوع N — نوع سالب</h3>
+<div class="card">
+  <ul>
+    <li>يُضاف عنصر <span class="key">خماسي التكافؤ (5 إلكترونات تكافؤ)</span></li>
+    <li>أمثلة: زرنيخ <span class="en">As</span>، فوسفور <span class="en">P</span>، أنتيمون <span class="en">Sb</span></li>
+    <li>4 من الـ 5 إلكترونات تكوّن روابط تساهمية مع ذرات السيليكون المجاورة</li>
+    <li>الإلكترون الخامس يبقى حر ← يصبح إلكترون توصيل إضافي</li>
+    <li>الذرة الشائبة تسمى <span class="key">ذرة واهبة (Donor)</span> — لأنها "تتبرع" بإلكترون</li>
+    <li>الواهب بعد فقدان الإلكترون يصبح شحنته <span class="key">موجبة</span></li>
+    <li>حاملات الشحنة <span class="key">الأغلبية</span> بنوع N = <span class="key">إلكترونات</span></li>
+    <li>حاملات الشحنة <span class="key">الأقلية</span> بنوع N = ثقوب (ناتجة حرارياً بشكل طبيعي)</li>
+  </ul>
+</div>
+
+<h3>◆ النوع P — نوع موجب</h3>
+<div class="card">
+  <ul>
+    <li>يُضاف عنصر <span class="key">ثلاثي التكافؤ (3 إلكترونات تكافؤ)</span></li>
+    <li>أمثلة: بورون <span class="en">B</span>، إنديوم <span class="en">In</span>، غاليوم <span class="en">Ga</span></li>
+    <li>3 إلكترونات فقط تكوّن روابط ← ينقص إلكترون واحد لإكمال 4 روابط ← يتكوّن <span class="key">ثقب</span></li>
+    <li>الذرة الشائبة تسمى <span class="key">ذرة مستقبلة (Acceptor)</span> — لأنها تقبل إلكترون لتملأ الثقب</li>
+    <li>حاملات الشحنة <span class="key">الأغلبية</span> بنوع P = <span class="key">ثقوب</span></li>
+    <li>حاملات الشحنة <span class="key">الأقلية</span> بنوع P = إلكترونات (ناتجة حرارياً)</li>
+  </ul>
+</div>
+
+<h2>10. جدول مقارنة سريع: N مقابل P</h2>
+<div class="card">
+  <table>
+    <tr><th></th><th>النوع N</th><th>النوع P</th></tr>
+    <tr><td>الشائب</td><td>خماسي التكافؤ (5e⁻)</td><td>ثلاثي التكافؤ (3e⁻)</td></tr>
+    <tr><td>أمثلة</td><td>As, P, Sb</td><td>B, In, Ga</td></tr>
+    <tr><td>اسم الذرة الشائبة</td><td>واهب Donor</td><td>مستقبلة Acceptor</td></tr>
+    <tr><td>الحامل الأغلبية</td><td>إلكترونات</td><td>ثقوب</td></tr>
+    <tr><td>الحامل الأقلية</td><td>ثقوب</td><td>إلكترونات</td></tr>
+    <tr><td>شحنة الذرة الشائبة بعد التطعيم</td><td>موجبة</td><td>سالبة</td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — ملخص المحاضرة 1 | إلكترونيات · د. ابراهيم الأحمد</div>
+</div>
+
+<!-- ================= TAB 2: CHEATSHEET ================= -->
+<div class="tab-panel" id="tab-cheat">
+<div class="section-hero"><h2 class="hero-title">📋 ورقة الغش</h2><p>معادلات وقواعد فقط — بدون شرح</p><span class="badge amber">Cheat Sheet</span></div>
+<h2>القانون الأساسي</h2>
+<div class="formula-box">
+  <span class="formula-label">العدد الأعظمي للإلكترونات بمدار n</span>
+  Ne = 2n²
+</div>
+<div class="card">
+  <table>
+    <tr><th>n</th><th>1</th><th>2</th><th>3</th></tr>
+    <tr><th>Ne</th><td>2</td><td>8</td><td>18</td></tr>
+  </table>
+  <b>⚠️ قيد ثابت:</b> إلكترونات مدار التكافؤ (الأخير) ≤ 8 دائماً.
+</div>
+
+<h2>تصنيف المواد (3 أقسام)</h2>
+<div class="card">
+  <table>
+    <tr><th>موصل</th><th>شبه موصل</th><th>عازل</th></tr>
+    <tr><td>Cu, Ag, Au, Al</td><td>Si, Ge, Sb, As</td><td>مطاط، زجاج، ميكا</td></tr>
+    <tr><td>e⁻ حرة = e⁻ تكافؤ</td><td>4 إلكترونات تكافؤ</td><td>e⁻ مرتبطة بقوة</td></tr>
+    <tr><td>لا فجوة (Overlap)</td><td>فجوة صغيرة</td><td>فجوة كبيرة جداً</td></tr>
+  </table>
+</div>
+
+<h2>الحزم الطاقية</h2>
+<div class="card">
+  <ul>
+    <li><span class="en">Valence Band</span> = نطاق التكافؤ (سفلي)</li>
+    <li><span class="en">Conduction Band</span> = نطاق التوصيل (فوق مباشرة)</li>
+    <li><span class="en">Band Gap</span> = الفجوة المحرّمة بينهم</li>
+    <li>موصل: Overlap (فجوة = صفر) | شبه موصل: فجوة صغيرة | عازل: فجوة كبيرة</li>
+  </ul>
+</div>
+
+<h2>Si vs Ge</h2>
+<div class="card">
+  <table>
+    <tr><th></th><th>Si</th><th>Ge</th></tr>
+    <tr><td>غلاف التكافؤ</td><td>3</td><td>4</td></tr>
+    <tr><td>الاستقرار الحراري</td><td>أعلى ✅</td><td>أقل</td></tr>
+    <tr><td>الاستخدام</td><td>واسع جداً</td><td>محدود</td></tr>
+  </table>
+</div>
+
+<h2>Doping — جدول N/P السريع</h2>
+<div class="card">
+  <table>
+    <tr><th></th><th><span class="tag n">N</span></th><th><span class="tag p">P</span></th></tr>
+    <tr><td>تكافؤ الشائب</td><td>5</td><td>3</td></tr>
+    <tr><td>أمثلة</td><td>As, P, Sb</td><td>B, In, Ga</td></tr>
+    <tr><td>اسم الذرة</td><td>Donor واهب</td><td>Acceptor مستقبلة</td></tr>
+    <tr><td>أغلبية</td><td>e⁻</td><td>Hole</td></tr>
+    <tr><td>أقلية</td><td>Hole</td><td>e⁻</td></tr>
+  </table>
+</div>
+
+<h2>مصطلحات إنجليزي ↔ عربي سريعة</h2>
+<div class="card">
+  <table>
+    <tr><td class="en">Nucleus</td><td>نواة</td></tr>
+    <tr><td class="en">Shell / Energy Level</td><td>غلاف / مستوى طاقة</td></tr>
+    <tr><td class="en">Valence Electrons</td><td>إلكترونات التكافؤ</td></tr>
+    <tr><td class="en">Free Electron</td><td>إلكترون حر</td></tr>
+    <tr><td class="en">Hole</td><td>ثقب</td></tr>
+    <tr><td class="en">Recombination</td><td>إعادة التركيب</td></tr>
+    <tr><td class="en">Band Gap</td><td>فجوة النطاق</td></tr>
+    <tr><td class="en">Doping</td><td>التطعيم/الحقن</td></tr>
+    <tr><td class="en">Donor</td><td>واهب</td></tr>
+    <tr><td class="en">Acceptor</td><td>مستقبل</td></tr>
+    <tr><td class="en">Majority / Minority Carriers</td><td>حاملات أغلبية / أقلية</td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — Cheat Sheet المحاضرة 1</div>
+</div>
+
+<!-- ================= TAB 3: QUESTIONS ================= -->
+<div class="tab-panel" id="tab-questions">
+<div class="section-hero"><h2 class="hero-title">🧠 بنك الأسئلة</h2><p>اختيار من متعدد · أسئلة مفتوحة · محاكاة امتحان</p></div>
+<div class="mini-toc">
+  <a href="#mcq">① اختيار من متعدد (15 سؤال)</a>
+  <a href="#open">② أسئلة مفتوحة (10 أسئلة)</a>
+  <a href="#exam">③ محاكاة امتحان</a>
+</div>
+
+<div class="section-title" id="mcq">① اختيار من متعدد</div>
+
+<div class="q-card">
+  <span class="q-num">1.</span> العدد الأعظمي للإلكترونات في المدار الثالث (n=3) هو:
+  <ul class="options">
+    <li>a) 8</li><li>b) 9</li><li>c) 18</li><li>d) 32</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) 18</span> — من القانون Ne=2n² = 2(9) = 18</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">2.</span> أي من التالي يوصّف "الثقب" (Hole) بشكل صحيح؟
+  <ul class="options">
+    <li>a) إلكترون حر يتحرك بحرية</li>
+    <li>b) مكان فارغ بنطاق التكافؤ ناتج عن قفز إلكترون لنطاق التوصيل</li>
+    <li>c) بروتون إضافي بالنواة</li>
+    <li>d) ذرة كاملة تتحرك بالبلورة</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span> — الثقب فراغ (شحنة موجبة ظاهرية) بمكان الإلكترون الذي غادر، والذرة نفسها لا تتحرك.</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">3.</span> ما اسم الذرة الشائبة خماسية التكافؤ المستخدمة بالتطعيم من نوع N؟
+  <ul class="options">
+    <li>a) مستقبلة Acceptor</li><li>b) واهبة Donor</li><li>c) متعادلة</li><li>d) عازلة</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) واهبة Donor</span> — لأنها تتبرع بإلكترون خامس زائد.</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">4.</span> في مادة من النوع P، حاملات الشحنة الأغلبية هي:
+  <ul class="options">
+    <li>a) إلكترونات</li><li>b) بروتونات</li><li>c) ثقوب</li><li>d) نيوترونات</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) ثقوب</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">5.</span> لماذا السيليكون أكثر استخداماً من الجرمانيوم بالصناعة الإلكترونية؟
+  <ul class="options">
+    <li>a) لأنه أرخص فقط</li>
+    <li>b) لأن إلكترونات تكافؤه بغلاف أقرب للنواة فهو أكثر استقراراً حرارياً</li>
+    <li>c) لأنه ليس شبه موصل</li>
+    <li>d) لأنه عنصر ثنائي وليس أحادي</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span> — Si بالغلاف الثالث (أقرب للنواة) مقابل Ge بالغلاف الرابع → طاقة إلكترونات Ge أعلى → تيار عكسي أكبر بدرجات حرارة عالية → أقل استقراراً.</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">6.</span> فجوة النطاق (Band Gap) بالمواد الناقلة (الموصلات):
+  <ul class="options">
+    <li>a) كبيرة جداً</li><li>b) صغيرة</li><li>c) معدومة (تداخل Overlap)</li><li>d) متغيرة حسب الحرارة فقط</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) معدومة</span> — نطاق التوصيل والتكافؤ متداخلان.</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">7.</span> أي عنصر التالي هو مثال على ذرة ثلاثية التكافؤ (تستخدم بتطعيم P)؟
+  <ul class="options">
+    <li>a) الفوسفور P</li><li>b) الزرنيخ As</li><li>c) البورون B</li><li>d) الأنتيمون Sb</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) البورون B</span> — الباقي (Phosphorus, Arsenic, Antimony) كلها خماسية التكافؤ لتطعيم N.</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">8.</span> "تيار الثقب" ينتج فعلياً بالحقيقة عن حركة:
+  <ul class="options">
+    <li>a) البروتونات بالنواة</li>
+    <li>b) إلكترونات التكافؤ من ذرة لذرة مجاورة</li>
+    <li>c) النيوترونات</li>
+    <li>d) الثقب نفسه كجسيم مادي</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span> — الثقب لا "يتحرك" فعلياً؛ إلكترون تكافؤ مجاور يملأ الثقب تاركاً ثقباً جديداً، فيبدو الثقب وكأنه انتقل بالاتجاه المعاكس.</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">9.</span> عدد إلكترونات التكافؤ بذرات أشباه الموصلات أحادية العنصر (Si, Ge, As, Sb):
+  <ul class="options">
+    <li>a) 2</li><li>b) 3</li><li>c) 4</li><li>d) 5</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) 4</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">10.</span> بالسيليكون النقي بدرجة حرارة الغرفة، العلاقة بين عدد الإلكترونات الحرة وعدد الثقوب:
+  <ul class="options">
+    <li>a) الإلكترونات أكثر بكثير</li>
+    <li>b) الثقوب أكثر بكثير</li>
+    <li>c) متساويان</li>
+    <li>d) لا توجد أي ثقوب</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) متساويان</span> — لأنهما ينتجان معاً كزوج (electron-hole pair).</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">11.</span> "إعادة التركيب" (Recombination) تحدث عندما:
+  <ul class="options">
+    <li>a) يكتسب إلكترون طاقة ويقفز لنطاق التوصيل</li>
+    <li>b) يفقد إلكترون توصيل طاقته وينخفض ليملأ ثقباً بنطاق التكافؤ</li>
+    <li>c) تنكسر رابطة تساهمية</li>
+    <li>d) تتكون ذرة شائبة جديدة</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">12.</span> حامل الشحنة الأقلية بمادة من النوع N هو:
+  <ul class="options">
+    <li>a) إلكترونات</li><li>b) ثقوب</li><li>c) بروتونات</li><li>d) فوتونات</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) ثقوب</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">13.</span> غلاف التكافؤ (Valence Shell) هو:
+  <ul class="options">
+    <li>a) أقرب غلاف للنواة</li>
+    <li>b) الغلاف الخارجي للذرة</li>
+    <li>c) النواة نفسها</li>
+    <li>d) غلاف وهمي غير موجود فعلياً</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">14.</span> الذرة المستقبلة (Acceptor Atom) تُستخدم بتطعيم:
+  <ul class="options">
+    <li>a) النوع N فقط</li><li>b) النوع P فقط</li><li>c) كلاهما N و P</li><li>d) لا علاقة لها بالتطعيم</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) النوع P</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">15.</span> عند إضافة ذرة خماسية التكافؤ (مثل الزرنيخ) إلى السيليكون، تصبح شحنة الذرة الشائبة بعد فقدان الإلكترون الخامس:
+  <ul class="options">
+    <li>a) سالبة</li><li>b) موجبة</li><li>c) متعادلة</li><li>d) لا تتغير الشحنة إطلاقاً</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) موجبة</span> — لأنها فقدت إلكتروناً (شحنة سالبة) فأصبح صافي شحنتها موجب.</div></details>
+</div>
+
+<div class="section-title" id="open">② أسئلة مفتوحة</div>
+
+<div class="q-card">
+  <p class="open-q"><b>1.</b> اشرح الفرق بين إلكترونات التكافؤ والإلكترونات الحرة، وكيف يتحول إلكترون التكافؤ لإلكترون حر؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">إلكترونات التكافؤ: بالغلاف الخارجي، مرتبطة بالذرة بدرجات متفاوتة من القوة. الإلكترون الحر: إلكترون تكافؤ اكتسب طاقة إضافية كافية (حرارية غالباً) ليتجاوز فجوة النطاق ويصل لنطاق التوصيل، فيصبح غير مرتبط بذرة معينة ويتحرك عشوائياً بالبلورة.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>2.</b> قارن بين الموصلات والعوازل وأشباه الموصلات من حيث فجوة النطاق وعدد الإلكترونات الحرة.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  الموصلات: فجوة نطاق معدومة (تداخل)، إلكترونات حرة كثيرة دائماً.<br>
+  العوازل: فجوة نطاق كبيرة جداً، إلكترونات حرة نادرة جداً (تحتاج انهيار بجهد عالٍ لعبورها).<br>
+  أشباه الموصلات: فجوة نطاق صغيرة نسبياً، عدد محدود من الإلكترونات الحرة يمكن زيادته بالتطعيم.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>3.</b> ما هي عملية التطعيم (Doping) ولماذا نحتاجها؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">التطعيم هو إضافة ذرات شائبة (خماسية أو ثلاثية التكافؤ) للسيليكون أو الجرمانيوم النقي، بهدف زيادة عدد حاملات الشحنة (إلكترونات أو ثقوب) لأن المادة النقية ضعيفة التوصيل ولا تصلح للاستخدام العملي بالأجهزة الإلكترونية.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>4.</b> اشرح كيف يتشكل الثقب عند إضافة ذرة ثلاثية التكافؤ (مثل البورون) للسيليكون.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">ذرة البورون تملك 3 إلكترونات تكافؤ فقط، وتحتاج 4 لتكوين روابط تساهمية كاملة مع 4 ذرات سيليكون مجاورة. الرابطة الرابعة تبقى ناقصة إلكترون واحد، فيتشكل ثقب بمكان الإلكترون المفقود مباشرة عند إضافة كل ذرة بورون.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>5.</b> ما الفرق بين حاملات الشحنة الأغلبية والأقلية؟ أعطِ مثالاً لكل نوع بمادة N ومادة P.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  الأغلبية: الحامل الأكثر عدداً الناتج مباشرة عن التطعيم (إلكترونات بـ N، ثقوب بـ P).<br>
+  الأقلية: الحامل الأقل عدداً الناتج بشكل طبيعي حرارياً (ثقوب بـ N، إلكترونات بـ P) — تركيزها أقل من الأغلبية.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>6.</b> اشرح آلية "انتقال" الثقب بالتركيب البلوري رغم أن الثقب ليس جسيماً فعلياً.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">إلكترون تكافؤ بذرة مجاورة ينتقل ليملأ الثقب الموجود (بتغيير طفيف بمستوى الطاقة)، فيترك مكانه هو ثقباً جديداً. تكرار هذه العملية عبر ذرات متتالية يعطي انطباع أن الثقب "يتحرك" بالاتجاه المعاكس لحركة الإلكترونات.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>7.</b> لماذا تعتبر أشباه الموصلات النقية غير مفيدة عملياً بالصناعة الإلكترونية؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">لأن عدد الإلكترونات الحرة والثقوب بها محدود جداً بحالتها النقية (فقط الناتج حرارياً)، ما يجعل موصليتها الكهربائية ضعيفة وغير قابلة للتحكم، لذلك يجب تطعيمها لزيادة حاملات الشحنة والتحكم بنوع التوصيل (N أو P).</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>8.</b> ما العلاقة بين موقع إلكترونات التكافؤ (رقم الغلاف) ودرجة استقرار المادة شبه الموصلة؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">كلما كان غلاف التكافؤ أبعد عن النواة (رقم أكبر)، كانت طاقة إلكتروناته أعلى وارتباطها أضعف، فتتحرر بسهولة أكبر حتى بدرجات حرارة منخفضة نسبياً، ما يسبب تياراً عكسياً أكبر وعدم استقرار حراري (مثال: Ge أقل استقراراً من Si).</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>9.</b> اذكر ثلاثة أمثلة على كل من: الموصلات، العوازل، وأشباه الموصلات.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  موصلات: نحاس (Cu)، فضة (Ag)، ذهب (Au) [أو ألومنيوم Al].<br>
+  عوازل: مطاط، زجاج، ميكا [أو بلاستيك، كوارتز].<br>
+  أشباه موصلات: سيليكون (Si)، جرمانيوم (Ge)، زرنيخ (As) [أو أنتيمون Sb].</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>10.</b> احسب العدد الأعظمي للإلكترونات بالمدارات 1، 2، 3 واشرح القيد الإضافي على مدار التكافؤ.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  باستخدام Ne = 2n²: المدار 1 → 2، المدار 2 → 8، المدار 3 → 18.<br>
+  لكن القيد الإضافي: عدد إلكترونات <b>مدار التكافؤ تحديداً</b> (سواء كان أي رقم مدار) لا يتجاوز 8 إلكترونات كحد أقصى، حتى لو كان القانون الرياضي يسمح بأكثر من ذلك لمدارات أعلى.</div></details>
+</div>
+
+<div class="section-title" id="exam">③ محاكاة امتحان</div>
+<div class="q-card">
+  <span class="exam-badge">⏱ محاكاة — 20 دقيقة</span>
+  <p style="font-size:.9rem; color:var(--muted)">أجب بدون فتح الملخص. راجع الأجوبة بالنهاية فقط.</p>
+
+  <p class="open-q"><b>س1 (5 علامات):</b> عرّف كل من: إلكترون التكافؤ، الثقب، فجوة النطاق. (سطر واحد لكل تعريف)</p>
+  <p class="open-q"><b>س2 (3 علامات):</b> اشرح بالتفصيل كيف يتشكل الثقب والإلكترون الحر معاً (Electron-Hole Pair) بالسيليكون النقي.</p>
+  <p class="open-q"><b>س3 (4 علامات):</b> قارن جدولياً بين تطعيم النوع N وتطعيم النوع P من حيث: نوع الشائب، تكافؤ الذرة، اسم الذرة الشائبة، الحامل الأغلبية.</p>
+  <p class="open-q"><b>س4 (3 علامات):</b> لماذا السيليكون يُفضّل على الجرمانيوم صناعياً؟ اذكر السبب الفيزيائي الدقيق.</p>
+  <p class="open-q"><b>س5 (2 علامة):</b> احسب العدد الأعظمي للإلكترونات بالمدار الرابع (n=4) باستخدام القانون المناسب.</p>
+  <p class="open-q"><b>س6 (3 علامات):</b> اختر الإجابة الصحيحة وبرر:<br>
+  المادة التي فيها نطاق التوصيل ونطاق التكافؤ متداخلان (Overlap) هي: (أ) عازل (ب) شبه موصل (ج) موصل</p>
+
+  <details><summary>📖 عرض نموذج الحل الكامل</summary>
+  <div class="answer-box">
+  <b>س1:</b> إلكترون التكافؤ: إلكترون بالغلاف الخارجي للذرة يشارك بالترابط الكيميائي. الثقب: مكان فارغ بنطاق التكافؤ ناتج عن مغادرة إلكترون، يتصرف كشحنة موجبة. فجوة النطاق: المنطقة المحرّمة الفاصلة بين نطاق التكافؤ ونطاق التوصيل.<br><br>
+  <b>س2:</b> بدرجة حرارة الغرفة، الطاقة الحرارية كافية لبعض إلكترونات التكافؤ لتجاوز فجوة النطاق والانتقال لنطاق التوصيل، فتصبح إلكترونات حرة. كل إلكترون يغادر يترك مكانه ثقباً بنطاق التكافؤ. لذلك ينتج زوج (إلكترون حر + ثقب) معاً، وعددهما متساوٍ بالمادة النقية.<br><br>
+  <b>س3:</b> (جدول) N: شائب خماسي (As,P,Sb)، اسمه Donor، أغلبية = إلكترونات | P: شائب ثلاثي (B,In,Ga)، اسمه Acceptor، أغلبية = ثقوب.<br><br>
+  <b>س4:</b> إلكترونات تكافؤ Si بالغلاف الثالث (أقرب للنواة) مقارنة بـ Ge بالغلاف الرابع، فطاقتها أقل وارتباطها أقوى، ما يجعل Si أكثر استقراراً حرارياً وأقل تياراً عكسياً.<br><br>
+  <b>س5:</b> Ne = 2n² = 2(4)² = 2(16) = 32.<br><br>
+  <b>س6:</b> (ج) موصل — لأن الموصلات فقط لديها تداخل بين النطاقين (Overlap)، فلا توجد فجوة نطاق أصلاً، وهذا يفسر توفر إلكترونات حرة دائماً.
+  </div></details>
+</div>
+
+<div class="footer">CTS Prep Series — بنك أسئلة المحاضرة 1</div>
+</div>
+
+<!-- ================= TAB 4: FLASHCARDS ================= -->
+<div class="tab-panel" id="tab-flash">
+<div class="section-hero"><h2 class="hero-title">⚡ بطاقات المراجعة</h2><p>اضغط البطاقة لقلبها وعرض الجواب</p></div>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+<div class="counter" id="counter">1 / 20</div>
+
+<div class="flashcard-wrap">
+  <div class="flashcard" id="flashcard" onclick="flipCard()">
+    <div class="face front">
+      <div class="q-label">سؤال</div>
+      <div class="q-text" id="qText"></div>
+      <div class="tap-hint">👆 اضغط لعرض الجواب</div>
+    </div>
+    <div class="face back">
+      <div class="a-label">جواب</div>
+      <div class="a-text" id="aText"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fc-controls">
+  <button class="btn btn-prev" onclick="prevCard()">◀ السابق</button>
+  <button class="btn btn-shuffle" onclick="shuffleCards()">🔀</button>
+  <button class="btn btn-next" onclick="nextCard()">التالي ▶</button>
+</div>
+
+<div class="footer">CTS Prep Series — بطاقات المحاضرة 1 | إلكترونيات</div>
+</div>
+
+<div class="footer">CTS Prep Series — المحاضرة 1 (موحدة) | إلكترونيات</div>
+
+</div>
+
+<script>
+// ===== Tab switching =====
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+const cards = [
+  {q:"ما هي وحدة تركيب المادة الأساسية؟", a:"الذرة (Atom) — تتكون من نواة تدور حولها إلكترونات."},
+  {q:"ما مكونات النواة (Nucleus)؟", a:"بروتونات (شحنة موجبة) ونيوترونات (متعادلة الشحنة)."},
+  {q:"ما هي شحنة الإلكترون؟", a:"شحنة سالبة، ويدور حول النواة بمدارات ثابتة."},
+  {q:"ما اسم الغلاف الخارجي للذرة؟", a:"غلاف التكافؤ (Valence Shell)، وإلكتروناته تسمى إلكترونات التكافؤ."},
+  {q:"اذكر قانون العدد الأعظمي للإلكترونات بمدار ما.", a:"Ne = 2n²، حيث n رقم المدار."},
+  {q:"ما العدد الأعظمي للإلكترونات بالمدار الثاني؟", a:"8 إلكترونات (2×2²=8)."},
+  {q:"ما القيد الإضافي على مدار التكافؤ مهما كان رقمه؟", a:"لا يتجاوز 8 إلكترونات كحد أقصى."},
+  {q:"عرّف الموصل (Conductor) واذكر مثالاً.", a:"مادة توصّل التيار بسهولة لأن إلكترونات تكافؤها حرة الحركة. مثال: النحاس Cu."},
+  {q:"عرّف العازل (Insulator) واذكر مثالاً.", a:"مادة لا يمر فيها التيار بالظروف العادية لأن إلكترونات تكافؤها مرتبطة بقوة. مثال: المطاط."},
+  {q:"عرّف شبه الموصل (Semiconductor) واذكر مثالين.", a:"مادة بين الموصل والعازل بقدرتها على التوصيل. مثال: السيليكون Si، الجرمانيوم Ge."},
+  {q:"كم عدد إلكترونات التكافؤ بأشباه الموصلات أحادية العنصر؟", a:"4 إلكترونات تكافؤ (Si, Ge, As, Sb)."},
+  {q:"ما هو نطاق التوصيل (Conduction Band)؟", a:"النطاق الذي تنتقل إليه الإلكترونات الحرة بعد اكتساب طاقة كافية، يقع فوق نطاق التكافؤ مباشرة."},
+  {q:"ما هي فجوة النطاق (Band Gap)؟", a:"منطقة محرّمة فاصلة بين نطاق التكافؤ ونطاق التوصيل، لا يمكن لإلكترون التواجد فيها."},
+  {q:"لماذا لا توجد فجوة نطاق بالمواد الموصلة؟", a:"لأن نطاق التوصيل ونطاق التكافؤ متداخلان (Overlap)، فتتوفر إلكترونات حرة دائماً."},
+  {q:"لماذا السيليكون أكثر استقراراً حرارياً من الجرمانيوم؟", a:"لأن إلكترونات تكافؤ Si بالغلاف الثالث (أقرب للنواة وأقل طاقة) بينما Ge بالغلاف الرابع (طاقة أعلى، ارتباط أضعف)."},
+  {q:"ما هو الثقب (Hole)؟", a:"مكان فارغ بنطاق التكافؤ ناتج عن مغادرة إلكترون، يتصرف كشحنة موجبة أولية."},
+  {q:"ما هي إعادة التركيب (Recombination)؟", a:"عندما يفقد إلكترون التوصيل طاقته وينخفض ليملأ ثقباً بنطاق التكافؤ."},
+  {q:"ما هو التطعيم (Doping)؟", a:"إضافة ذرات شائبة لمادة شبه موصلة نقية بهدف زيادة عدد حاملات الشحنة (إلكترونات أو ثقوب)."},
+  {q:"ما هي الذرة الشائبة المستخدمة بتطعيم النوع N؟ اذكر مثالاً.", a:"ذرة خماسية التكافؤ تسمى الواهب (Donor). مثال: الزرنيخ As، الفوسفور P، الأنتيمون Sb."},
+  {q:"ما هي الذرة الشائبة المستخدمة بتطعيم النوع P؟ اذكر مثالاً.", a:"ذرة ثلاثية التكافؤ تسمى المستقبلة (Acceptor). مثال: البورون B، الإنديوم In، الغاليوم Ga."}
+];
+
+let currentIndex = 0;
+let isFlipped = false;
+
+function renderCard(){
+  document.getElementById('qText').textContent = cards[currentIndex].q;
+  document.getElementById('aText').textContent = cards[currentIndex].a;
+  document.getElementById('counter').textContent = (currentIndex+1) + ' / ' + cards.length;
+  document.getElementById('progressFill').style.width = ((currentIndex+1)/cards.length*100) + '%';
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+  isFlipped = false;
+}
+
+function flipCard(){
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard(){
+  currentIndex = (currentIndex + 1) % cards.length;
+  renderCard();
+}
+
+function prevCard(){
+  currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+  renderCard();
+}
+
+function shuffleCards(){
+  for(let i = cards.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  currentIndex = 0;
+  renderCard();
+}
+
+renderCard();
+</script>
+
+</body>
+</html>

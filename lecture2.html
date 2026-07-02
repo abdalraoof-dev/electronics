@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحاضرة 2 — الديودات (الثنائيات) | CTS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#0D1117; --card:#161B22; --border:#2D3440;
+  --blue:#2563EB; --amber:#E8A000; --white:#E2E8F0; --muted:#8B96A5;
+  --green:#22c55e; --red:#ef4444;
+}
+*{box-sizing:border-box}
+html,body{margin:0; padding:0}
+body{
+  background:var(--bg); color:var(--white);
+  font-family:'Tajawal','Segoe UI',sans-serif; line-height:1.9;
+  padding-bottom:70px;
+}
+.en, .mono{font-family:'JetBrains Mono',monospace; color:#93c5fd; direction:ltr}
+
+.top-header{
+  position:sticky; top:0; z-index:100;
+  background:linear-gradient(135deg,#12213f,#0D1117);
+  border-bottom:1px solid var(--blue);
+  padding:14px 16px 0; text-align:center;
+}
+.top-header h1{color:var(--amber); margin:0 0 3px; font-size:1.15rem}
+.top-header p{color:var(--muted); margin:0 0 12px; font-size:.78rem}
+
+.tabs{display:flex; gap:6px; overflow-x:auto; padding:0 10px 10px; scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  flex:0 0 auto; background:var(--card); color:var(--muted);
+  border:1px solid var(--border); border-radius:20px;
+  padding:8px 16px; font-family:'Tajawal'; font-size:.85rem; font-weight:700;
+  cursor:pointer; white-space:nowrap; transition:.2s;
+}
+.tab-btn.active{background:var(--blue); color:#fff; border-color:var(--blue)}
+
+.content-wrap{padding:16px 14px 10px; max-width:600px; margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+h2{
+  color:var(--blue); font-size:1.1rem; border-right:4px solid var(--amber);
+  padding-right:10px; margin-top:30px; margin-bottom:10px;
+}
+h3{color:var(--amber); font-size:1rem; margin-top:18px; margin-bottom:8px}
+.card{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px}
+ul{margin:8px 0; padding-right:20px}
+li{margin-bottom:6px}
+.key{color:var(--amber); font-weight:700}
+.formula{
+  background:#0A0E14; border:1px dashed var(--blue); border-radius:8px;
+  padding:10px 14px; text-align:center; font-family:'JetBrains Mono',monospace;
+  color:#93c5fd; margin:10px 0; font-size:1rem; direction:ltr;
+}
+table{width:100%; border-collapse:collapse; margin:10px 0; font-size:.88rem}
+th,td{border:1px solid var(--border); padding:8px 8px; text-align:center}
+th{background:#1c2532; color:var(--amber)}
+.note{background:#1c1508; border-right:4px solid var(--amber); border-radius:8px; padding:10px 14px; margin:12px 0; font-size:.9rem}
+.imp{background:#0e1c2b; border-right:4px solid var(--blue); border-radius:8px; padding:10px 14px; margin:12px 0; font-size:.9rem}
+.compare-grid{display:flex; flex-direction:column; gap:10px}
+.compare-item{background:#0f1420; border-radius:10px; padding:10px 14px; border:1px solid var(--border)}
+.compare-item .title{color:var(--amber); font-weight:700; margin-bottom:4px}
+
+.section-hero{
+  text-align:center; padding:16px 14px; border-radius:14px;
+  background:linear-gradient(135deg,#12213f,#0D1117);
+  border:1px solid var(--blue); margin-bottom:18px;
+}
+.section-hero h2.hero-title{color:var(--amber); margin:0 0 4px; font-size:1.2rem; border:none; padding:0}
+.section-hero p{color:var(--muted); margin:0; font-size:.85rem}
+.badge{display:inline-block; background:var(--blue); color:#fff; padding:3px 12px; border-radius:20px; font-size:.75rem; margin-top:8px}
+.badge.amber{background:var(--amber); color:#000}
+
+.formula-box{
+  background:#0A0E14; border:1px solid var(--blue); border-radius:8px;
+  padding:10px 12px; margin:8px 0; font-family:'JetBrains Mono',monospace;
+  color:#93c5fd; direction:ltr; text-align:center; font-size:1rem;
+}
+.formula-label{color:var(--amber); font-family:'Tajawal'; direction:rtl; font-size:.8rem; margin-bottom:4px; display:block}
+.tag{display:inline-block; background:var(--blue); color:#fff; font-size:.7rem; padding:1px 8px; border-radius:10px; margin-inline-end:4px}
+.tag.p{background:#7c3aed}
+.tag.n{background:#059669}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:12px}
+.q-num{color:var(--amber); font-weight:700; margin-left:4px}
+.options{list-style:none; padding:0; margin:8px 0 0}
+.options li{padding:7px 10px; margin-bottom:6px; border-radius:8px; background:#0f1420; border:1px solid var(--border); font-size:.9rem}
+details{margin-top:6px}
+summary{cursor:pointer; color:var(--blue); font-size:.85rem; font-weight:700; padding:4px 0}
+.answer-box{margin-top:6px; background:#0a1f14; border-right:3px solid var(--green); padding:8px 10px; border-radius:6px; font-size:.87rem}
+.correct{color:var(--green); font-weight:700}
+.open-q{font-size:.95rem; margin-bottom:4px}
+.exam-badge{display:inline-block; background:var(--amber); color:#000; font-size:.7rem; padding:2px 10px; border-radius:10px; font-weight:700; margin-bottom:8px}
+.section-title{background:var(--blue); color:#fff; padding:8px 14px; border-radius:10px; font-size:1.05rem; margin-top:26px; margin-bottom:12px; text-align:center}
+.mini-toc{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px; margin-bottom:18px}
+.mini-toc a{color:var(--blue); display:block; padding:4px 0; text-decoration:none; font-size:.9rem}
+
+.progress{width:100%; background:var(--card); border-radius:20px; height:8px; margin-bottom:16px; overflow:hidden; border:1px solid var(--border)}
+.progress-fill{height:100%; background:var(--blue); width:0%; transition:width .3s}
+.counter{color:var(--muted); font-size:.85rem; margin-bottom:10px; text-align:center}
+.flashcard-wrap{width:100%; perspective:1200px; margin-bottom:16px}
+.flashcard{position:relative; width:100%; min-height:230px; transform-style:preserve-3d; transition:transform .5s; cursor:pointer}
+.flashcard.flipped{transform:rotateY(180deg)}
+.face{position:absolute; inset:0; backface-visibility:hidden; border-radius:16px; padding:22px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border:1px solid var(--border)}
+.front{background:linear-gradient(135deg,#161B22,#0D1117); border-color:var(--blue)}
+.back{background:linear-gradient(135deg,#1c1508,#161B22); border-color:var(--amber); transform:rotateY(180deg); font-size:.96rem; line-height:1.7}
+.q-label, .a-label{font-size:.7rem; color:var(--muted); text-transform:uppercase; margin-bottom:10px; letter-spacing:1px}
+.q-text{font-size:1.05rem; font-weight:700; color:var(--white)}
+.a-text{color:var(--white)}
+.tap-hint{position:absolute; bottom:10px; font-size:.7rem; color:var(--muted)}
+.fc-controls{display:flex; gap:10px; width:100%}
+.btn{flex:1; padding:12px; border-radius:10px; border:none; font-size:.95rem; font-family:'Tajawal'; font-weight:700; cursor:pointer}
+.btn-prev{background:var(--card); color:var(--white); border:1px solid var(--border)}
+.btn-next{background:var(--blue); color:#fff}
+.btn-shuffle{background:var(--amber); color:#000; flex:0 0 auto; padding:12px 16px}
+
+.footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:40px}
+</style>
+
+<style>
+/* ===== Floating Lecture Navigator (injected) ===== */
+.lecnav-fab{
+  position:fixed; bottom:18px; left:18px; z-index:999;
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg,#2563EB,#1d4ed8);
+  color:#fff; border:none; box-shadow:0 4px 14px rgba(37,99,235,.5);
+  font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:transform .2s;
+}
+.lecnav-fab:active{transform:scale(.92)}
+.lecnav-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000;
+  display:none; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.lecnav-overlay.open{display:flex}
+.lecnav-sheet{
+  width:100%; max-width:600px; background:#161B22; border:1px solid #2D3440;
+  border-bottom:none; border-radius:20px 20px 0 0; padding:16px 14px 26px;
+  max-height:80vh; overflow-y:auto; animation:lecnavUp .25s ease;
+  font-family:'Tajawal','Segoe UI',sans-serif;
+}
+@keyframes lecnavUp{from{transform:translateY(30px); opacity:0} to{transform:translateY(0); opacity:1}}
+.lecnav-sheet h3{
+  color:#E8A000; margin:0 0 12px; font-size:1.05rem; text-align:center;
+  border:none; padding:0;
+}
+.lecnav-home{
+  display:block; text-align:center; color:#93c5fd; text-decoration:none;
+  font-size:.85rem; margin-bottom:14px; padding:8px; border:1px dashed #2D3440;
+  border-radius:10px;
+}
+.lecnav-list{display:flex; flex-direction:column; gap:8px}
+.lecnav-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-radius:12px; background:#0f1420; border:1px solid #2D3440;
+  color:#E2E8F0; text-decoration:none; font-size:.9rem; transition:.15s;
+}
+.lecnav-item:active{background:#1c2532}
+.lecnav-item.current{border-color:#2563EB; background:#0e1c2b}
+.lecnav-item .lecnav-num{
+  flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+  background:#2563EB; color:#fff; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:.85rem; font-family:'JetBrains Mono',monospace;
+}
+.lecnav-item.current .lecnav-num{background:#E8A000; color:#000}
+.lecnav-item .lecnav-title{flex:1}
+.lecnav-close{
+  position:absolute; top:10px; left:14px; background:none; border:none;
+  color:#8B96A5; font-size:1.3rem; cursor:pointer; padding:4px 8px;
+}
+.lecnav-sheet{position:relative}
+</style>
+
+</head>
+<body>
+
+<!-- ===== Floating Lecture Navigator (injected) ===== -->
+<button class="lecnav-fab" id="lecnavFab" onclick="document.getElementById('lecnavOverlay').classList.add('open')" aria-label="التنقل بين المحاضرات">☰</button>
+<div class="lecnav-overlay" id="lecnavOverlay" onclick="if(event.target===this) this.classList.remove('open')">
+  <div class="lecnav-sheet">
+    <button class="lecnav-close" onclick="document.getElementById('lecnavOverlay').classList.remove('open')">✕</button>
+    <h3>📚 التنقل بين المحاضرات</h3>
+    <a class="lecnav-home" href="index.html">⌂ العودة للفهرس الرئيسي</a>
+    <div class="lecnav-list">
+  <a class="lecnav-item" href="lecture1.html"><span class="lecnav-num">1</span><span class="lecnav-title">مدخل في الالكترونيات</span></a>
+  <a class="lecnav-item current" href="lecture2.html"><span class="lecnav-num">2</span><span class="lecnav-title">الديودات (الثنائيات)</span></a>
+  <a class="lecnav-item" href="lecture3.html"><span class="lecnav-num">3</span><span class="lecnav-title">الدارة الأساسية والمقومات</span></a>
+  <a class="lecnav-item" href="lecture4.html"><span class="lecnav-num">4</span><span class="lecnav-title">المرشحات والمحددات ومضاعفات الجهد</span></a>
+  <a class="lecnav-item" href="lecture5.html"><span class="lecnav-num">5</span><span class="lecnav-title">ديود زينر وأنواع الديودات الأخرى</span></a>
+  <a class="lecnav-item" href="lecture6.html"><span class="lecnav-num">6</span><span class="lecnav-title">الترانزستور BJT</span></a>
+  <a class="lecnav-item" href="lecture7.html"><span class="lecnav-num">7</span><span class="lecnav-title">منحنيات المجمع ومناطق عمل الترانزستور</span></a>
+    </div>
+  </div>
+</div>
+
+
+<div class="top-header">
+  <h1>⚡ المحاضرة 2 — الديودات (الثنائيات)</h1>
+  <p>Diodes and Applications · د. ابراهيم الأحمد</p>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary">📘 ملخص</button>
+    <button class="tab-btn" data-tab="cheat">📋 ورقة غش</button>
+    <button class="tab-btn" data-tab="questions">🧠 أسئلة</button>
+    <button class="tab-btn" data-tab="flash">⚡ بطاقات</button>
+  </div>
+</div>
+
+<div class="content-wrap">
+
+<!-- ================= TAB 1: SUMMARY ================= -->
+<div class="tab-panel active" id="tab-summary">
+<div class="section-hero"><h2 class="hero-title">📘 الملخص المكثف</h2><p>كل النقاط الأساسية — منظمة بالترتيب</p></div>
+
+<h2>1. بنية الديود (Diode Structure)</h2>
+<div class="card">
+  <ul>
+    <li>الديود = قطعة صغيرة من مادة شبه موصلة (عادة <span class="key">سيليكون</span>) يتم تجهيزها بغرس منطقة <span class="en">p</span> بجانب منطقة <span class="en">n</span></li>
+    <li>التقاطع بينهما يسمى <span class="key">وصلة PN (PN Junction)</span></li>
+    <li>المنطقة بينهما تسمى <span class="key">منطقة الحجب / الاستنزاف / الافراغ (Depletion Region)</span></li>
+    <li>منطقة <span class="en">p</span> تسمى <span class="key">الأنود (Anode / A)</span> — متصلة بقطب التوصيل</li>
+    <li>منطقة <span class="en">n</span> تسمى <span class="key">الكاثود (Cathode / K)</span> — متصلة بقطب التوصيل</li>
+  </ul>
+</div>
+
+<h2>2. الوصلة PN — THE PN JUNCTION</h2>
+<div class="card">
+  <ul>
+    <li>عند وضع قطعة سيليكون نوع <span class="en">p</span> وأخرى نوع <span class="en">n</span> متلاصقتين، يتشكل بينهما تقاطع حدود يسمى <span class="key">حاجز PN</span></li>
+    <li>حاجز PN أساسي بالديودات، وبعض الترانزستورات، والخلايا الشمسية، وغيرها من الأجهزة</li>
+    <li>بمنطقة <span class="en">p</span>: يوجد عدد أكبر من الحاملات <span class="key">الأساسية (الأغلبية) = ثقوب pp</span>، وعدد قليل من الحاملات <span class="key">الأقلية (الثانوية) = إلكترونات np</span></li>
+    <li>بمنطقة <span class="en">n</span>: يوجد عدد أكبر من الحاملات <span class="key">الأساسية = إلكترونات nn</span>، وعدد قليل من الحاملات <span class="key">الأقلية = ثقوب pn</span></li>
+  </ul>
+</div>
+
+<h2>3. تشكل منطقة الاستنزاف (Formation of the Depletion Region)</h2>
+<div class="card">
+  <ul>
+    <li>عند تشكيل الوصلة: الإلكترونات الحرة بمنطقة n تنجرف عشوائياً بجميع الاتجاهات</li>
+    <li>الإلكترونات الحرة القريبة من الوصلة بمنطقة n تنتشر إلى منطقة p وتتحد مع الثقوب (والعكس صحيح)</li>
+    <li>هذا يخلق طبقة من الشحنات الموجبة والسالبة قرب التقاطع = <span class="key">منطقة الاستنزاف/الحجب</span></li>
+    <li>مصطلح "استنزاف" يعني أن المنطقة القريبة من الوصلة أصبحت خالية (مستنفدة) من حاملات الشحنة بسبب الانتشار عبر الوصلة</li>
+    <li>منطقة الاستنزاف تتشكل بسرعة كبيرة وهي رقيقة جداً مقارنة بمنطقتي n و p</li>
+  </ul>
+  <h3>النتيجة: جهد الحاجز (Barrier Potential) V₀</h3>
+  <ul>
+    <li>داخل منطقة الاستنزاف: الشحنة موجبة من جانب n وسالبة من جانب p</li>
+    <li>ينشأ فرق جهد على جانبي الوصلة يسمى <span class="key">جهد الحاجز أو جهد التماس V₀</span></li>
+    <li>هذا الجهد يشكل مجال كهربائي يعيق انتقال حاملات الشحنة (يعرقل انتشار الإلكترونات لـ p والثقوب لـ n)</li>
+    <li>عادة يبلغ أجزاء عشرية من الفولت</li>
+    <li>مع نمو (زيادة) كثافة الشحنتين المتقابلتين، يزداد فرق جهد التماس V₀ — أي يزداد الحاجز الجهدي</li>
+  </ul>
+  <div class="formula">
+    <span class="formula-label" style="color:#93c5fd">جهد الحاجز حسب المادة</span>
+    الجرمانيوم: V₀ = (0.3 – 0.4) V<br>
+    السيليكون: V₀ = (0.6 – 0.7) V
+  </div>
+</div>
+
+<h2>4. الانحياز الأمامي — Forward Bias</h2>
+<div class="card">
+  <ul>
+    <li>تعريف: تطبيق جهد مستمر خارجي على أطراف الديود يسمح بمرور التيار</li>
+    <li><span class="key">الشرط الأول:</span> تطبيق الموجب على الأنود (p) والسالب على الكاثود (n)</li>
+    <li><span class="key">الشرط الثاني:</span> جهد الانحياز الخارجي V<sub>BIAS</sub> يجب أن يكون أكبر من جهد الحاجز (جهد الفتح)</li>
+    <li>يُستخدم مقاومة لتحديد (تقييد) التيار الأمامي كي لا يتلف الديود</li>
+    <li>الجانب الموجب لمصدر الجهد يجذب إلكترونات التكافؤ باتجاه الطرف الأيسر من منطقة p</li>
+    <li>إلكترونات التكافؤ تنتقل من ثقب لآخر باتجاه اليسار — الثقوب (الأغلبية بمنطقة p) تتحرك فعلياً نحو اليمين باتجاه التقاطع</li>
+    <li>هذا التدفق الفعال للثقوب = <span class="key">تيار ثقبي</span></li>
+    <li>خارج منطقة p (بالسلك التوصيلي)، تتدفق الإلكترونات نحو الجانب الإيجابي لمصدر الجهد، وتصبح إلكترونات توصيل بالموصل المعدني</li>
+  </ul>
+  <div class="imp">💡 عند وجود جهد أمامي مباشر كافٍ، يمكن أن يختفي الحاجز الجهدي عند الملتقى تماماً، وتصبح مقاومة الملتقى قريبة من الصفر (يمكن إهمالها).</div>
+</div>
+
+<h3>مثال محلول — تأثير جهد الانحياز على مقاومة الملتقى</h3>
+<div class="card">
+  <p>نصف ناقل ثنائي: مقاومة الطبقة الحاجزة 200Ω، ومقاومة الحجم لكل من (P وn) = 4Ω</p>
+  <ul>
+    <li><b>عند جهد صغير (قبل الفتح):</b> المقاومة الكلية = 200 + 2×4 = <span class="key">208Ω</span> (تساوي تقريباً مقاومة الملتقى p,n)</li>
+    <li><b>عند تطبيق جهد مباشر أكبر (0.7V):</b> ينخفض الحاجز الجهدي، تصبح مقاومة الملتقى تقريباً أقل من 1Ω</li>
+    <li>المقاومة الكلية تصبح: R<sub>f</sub> = 1 + 8 ≈ <span class="key">9Ω</span> (المقاومة الأمامية)</li>
+  </ul>
+  <div class="note">📌 خلاصة: تتحرك الإلكترونات من منطقة n إلى منطقة p مجتازة الحاجز الجهدي، وبنفس الوقت تتحرك الثقوب بالاتجاه المعاكس. يمر عبر الملتقى تياران: إلكتروني وثقبي، لكن بالأسلاك التوصيلية الخارجية يتحرك فقط الإلكترونات.</div>
+</div>
+
+<h2>5. الانحياز العكسي — Reverse Bias</h2>
+<div class="card">
+  <ul>
+    <li>تعريف: الحالة التي يُمنع فيها مرور التيار من خلال الديود</li>
+    <li>يُطبق الجهد بالاتجاه العكسي: سالب على p وموجب على n</li>
+    <li>منطقة الاستنزاف (الحاجز الجهدي) تظهر أكبر أو أوسع مما هي عليه بالانحياز الأمامي</li>
+    <li>حاملات الشحنة الأساسية تبتعد عن الوصلة (تنجذب نحو الأقطاب الخارجية المعاكسة)، فتتوسع منطقة الاستنزاف</li>
+    <li>يستمر هذا حتى يتوازن المجال الكهربائي عبر منطقة الاستنزاف مع جهد الانحياز الخارجي V<sub>BIAS</sub></li>
+    <li>بهذه المرحلة يتوقف التيار الأساسي تقريباً (باستثناء تيار عكسي صغير جداً يمكن إهماله)</li>
+  </ul>
+  <h3>التيار العكسي (Reverse Current, I_R)</h3>
+  <ul>
+    <li>ينتج عن حاملات الشحنة <span class="key">الأقلية</span> (إلكترونات بـ p، ثقوب بـ n) — تيار صغير جداً للغاية</li>
+    <li>حاملات الأقلية "تُدفع" عبر الوصلة بفعل جهد الانحياز العكسي، مكوّنة تيار ثقب غير أساسي صغير</li>
+    <li>كلما زاد الجهد العكسي، تزداد منطقة الاستنزاف اتساعاً، وتزداد مقاومتها العكسية R<sub>i</sub></li>
+    <li>بهذه الحالة يُعتبر الديود في حالة قطع (لا يمرر تيار أساسي)</li>
+  </ul>
+  <div class="note">⚠️ عند اللحظة الابتدائية لتطبيق جهد عكسي، يحدث تيار عابر قصير جداً (شبيه بتيار شحن مكثف)، ثم يستقر التيار على قيمة صغيرة جداً تسمى تيار التسريب.</div>
+</div>
+
+<h2>6. خصائص جهد-تيار للديود (V-I Characteristic)</h2>
+<div class="card">
+  <h3>الانحياز الأمامي (V-I Characteristic for Forward Bias)</h3>
+  <ul>
+    <li>عند جهد صفر، لا يمر تيار أمامي</li>
+    <li>مع زيادة جهد المنبع تدريجياً، يبدأ التيار الأمامي بالظهور فعلياً عند <span class="key">V_F > 0.7V</span> (للسيليكون)</li>
+    <li>قبل هذا الجهد يكون التيار تقريباً صفر</li>
+    <li>لا يمكن زيادة الجهد الأمامي إلى ما لا نهاية — التيار الأمامي الأعظمي (I_F) محدد بالمواصفات الفنية للديود</li>
+    <li>في البداية، منحنى V-I ليس خطياً (لأن مقاومة الطبقة الحاجزة تقل مع زيادة الجهد الأمامي)</li>
+    <li>بعد جهد الفتح، تصبح الخاصية خطية تقريباً (فقط المقاومة الحجمية للطبقتين p,n تبقى تقريباً ثابتة)</li>
+  </ul>
+  <h3>الانحياز العكسي (V-I Characteristic for Reverse Bias)</h3>
+  <ul>
+    <li>عند جهد 0V، لا يوجد تيار عكسي</li>
+    <li>مع زيادة الجهد العكسي، يبقى التيار العكسي I_R صغيراً جداً (تقريباً ثابت) بينما الجهد عبر الديود يزداد</li>
+    <li>عند الوصول لجهد حدي يسمى <span class="key">جهد الانهيار V_BR</span>، يبدأ التيار العكسي بالازدياد بسرعة كبيرة</li>
+  </ul>
+</div>
+
+<h2>7. نماذج (أشكال تمثيل) الديود — Diode Models</h2>
+<div class="card compare-grid">
+  <div class="compare-item">
+    <div class="title">① النموذج المثالي <span class="en">Ideal Diode Model</span></div>
+    أقل دقة، أبسط تمثيل.<br>
+    - انحياز أمامي = مفتاح مغلق (ON) مثالي.<br>
+    - انحياز عكسي = مفتاح مفتوح (OFF) مثالي.
+  </div>
+  <div class="compare-item">
+    <div class="title">② النموذج العملي <span class="en">Practical Diode Model</span></div>
+    يتضمن جهد الحاجز.<br>
+    - انحياز أمامي: يُكافئ مصدر جهد ثابت V_F = 0.7V (باتجاه الأنود).<br>
+    - انحياز عكسي: يُكافئ مفتاح مفتوح (OFF) تماماً كالنموذج المثالي.
+  </div>
+  <div class="compare-item">
+    <div class="title">③ النموذج الكامل (المخبري) <span class="en">Complete Diode Model</span></div>
+    الأكثر دقة.<br>
+    - انحياز أمامي: يأخذ بالحسبان المقاومة الديناميكية الأمامية الصغيرة r'd.<br>
+    - انحياز عكسي: يأخذ بالحسبان المقاومة الداخلية العكسية الكبيرة r'R.
+  </div>
+</div>
+
+<h3>مثال محلول شامل — تطبيق النماذج الثلاثة</h3>
+<div class="card">
+  <p><b>المعطيات:</b> V<sub>BIAS</sub> = 10V (أمامي)، R<sub>LIMIT</sub> = 1.0kΩ، R'<sub>d</sub> = 10Ω (المقاومة الداخلية الأمامية)، I_R = 1μA (بالانحياز العكسي)</p>
+
+  <h3>(أ) الانحياز الأمامي</h3>
+  <div class="formula">
+    Practical Model:<br>
+    I_F = (V_BIAS − 0.7V) / R_LIMIT = (10−0.7)/1kΩ = <b>9.3 mA</b><br>
+    V_RLIMIT = I_F × R_LIMIT = 9.3V
+  </div>
+  <div class="formula">
+    Complete Model:<br>
+    I_F = (V_BIAS − 0.7V) / (R_LIMIT + r'd) = 9.3/1010Ω = <b>9.21 mA</b><br>
+    V_F = 0.7 + I_F×r'd = 0.7 + (9.21mA)(10Ω) = <b>792 mV</b><br>
+    V_RLIMIT = I_F × R_LIMIT = <b>9.21V</b>
+  </div>
+
+  <h3>(ب) الانحياز العكسي</h3>
+  <div class="formula">
+    Ideal Model: I_R = 0A → V_R = V_BIAS = 10V<br><br>
+    Practical Model: I_R = 0A → V_R = V_BIAS = 10V<br><br>
+    Complete Model: I_R = 1μA<br>
+    V_RLIMIT = I_R×R_LIMIT = (1μA)(1kΩ) = 1mV<br>
+    V_R = V_BIAS − V_RLIMIT = 10 − 0.001 = <b>9.999V</b>
+  </div>
+</div>
+
+<h2>8. ظاهرة الانهيار — Breakdown</h2>
+<div class="card">
+  <ul>
+    <li>عند زيادة الجهد العكسي بشكل كبير جداً (مئات الفولتات)، يبدي الديود مقاومة تبلغ مئات الكيلو أومات</li>
+    <li>الحاجز الجهدي يصبح كبيراً جداً بحيث لا تستطيع الإلكترونات والثقوب اجتيازه</li>
+    <li>مع الاستمرار بزيادة الجهد العكسي، ينمو التيار العكسي بسرعة ضعيفة، ثم يحدث <span class="key">ما يشبه ظاهرة التشبع</span></li>
+    <li>هذه الزيادة الضعيفة سببها تسخين الملتقى بواسطة التيار، وكذلك تزايد حاملات الشحنة نتيجة حالة التأين الاصطدامي</li>
+  </ul>
+  <div class="formula" style="direction:rtl; font-family:'Tajawal'">
+    <b>تعريف الانهيار:</b> زيادة فجائية بالتيار أو نقصان فجائي بقيمة المقاومة العكسية للديود، نتيجة جهد عكسي كبير.
+  </div>
+  <p>ينقسم الانهيار إلى نوعين رئيسيين: <span class="key">كهربائي (يقسم إلى حقلي وتراكمي)</span> و <span class="key">حراري</span>.</p>
+</div>
+
+<h3>① الانهيار الكهربائي (Electrical Breakdown)</h3>
+<div class="card">
+  <ul>
+    <li>قابل للانعكاس — عند ثبوت هذا النوع من الانهيار لا تتحطم المادة؛ وعند قطع الجهد العكسي يعود الديود لحالته الطبيعية دون تخريب أو حرق للمادة</li>
+    <li>يعمل الديود بشكل طبيعي مجدداً محافظاً على مواصفاته الفنية السابقة</li>
+  </ul>
+  <h3>أ) الانهيار الحقلي (Field/Zener Breakdown)</h3>
+  <ul>
+    <li>مع زيادة الجهد العكسي، تزداد شدة الحقل الكهربائي داخل الوصلة</li>
+    <li>الحقل يصبح قادراً على تحطيم (كسر) الروابط التساهمية المرتبطة بذرات المادة الأصلية بالمنطقة المستنزفة</li>
+    <li>هذا يؤدي إلى تحطيم الروابط وزيادة عدد حاملات الشحنة ضمن منطقة الملتقى</li>
+    <li>يقلل من عرض الحزمة الممنوعة (المنطقة المستنزفة)، فتنجرف هذه الحاملات بالاتجاه العكسي تحت تأثير الحقل الكهربائي</li>
+  </ul>
+  <h3>ب) الانهيار التراكمي / التكاثري (Avalanche Breakdown)</h3>
+  <ul>
+    <li>سببه ازدياد شدة الحقل الكهربائي على الملتقى (P,n) إلى قيمة تصبح عندها الطاقة الحركية لحاملات الشحنة (الإلكترونات مثلاً) كافية لتأيّن ذرات المادة الأصلية عند اصطدامها بها</li>
+    <li>عند انتقال إلكترون من n إلى P بوجود جهد E، يكتسب طاقة حركية تكفي لتحطيم روابط ذرة أخرى، مولّداً ثقب-إلكترون جديد</li>
+    <li>الإلكترون الجديد يكتسب طاقة حركية ويحطم ذرة أخرى، وهكذا تتكرر العملية (تكاثر/انهيار تسلسلي)</li>
+    <li>هذا يؤدي لزيادة عدد حاملات الشحنة ضمن الملتقى، وبالتالي زيادة التيار العكسي</li>
+  </ul>
+</div>
+
+<h3>② الانهيار الحراري (Thermal Breakdown)</h3>
+<div class="card">
+  <ul>
+    <li><span class="key">غير قابل للانعكاس</span> — يرافقه تحطم فعلي للمادة شبه الناقلة</li>
+    <li>سببه خلل باستقرار النظام الحراري للملتقى (P,n)</li>
+    <li>كمية الحرارة التي يحصل عليها الملتقى نتيجة التسخين بالتيار العكسي تكون أكبر من كمية الحرارة المسحوبة (المُبدَّدة)</li>
+    <li>ترتفع درجة حرارة الملتقى وتقل مقاومته، فيزداد التيار العكسي، مما يسبب تسخين إضافي زائد للملتقى</li>
+    <li>النتيجة: يتحطم الملتقى حرارياً (حرق المادة) بشكل نهائي</li>
+  </ul>
+</div>
+
+<h2>9. جدول مقارنة أنواع الانهيار</h2>
+<div class="card">
+  <table>
+    <tr><th></th><th>حقلي</th><th>تراكمي (Avalanche)</th><th>حراري</th></tr>
+    <tr><td>السبب</td><td>تحطم الروابط بفعل الحقل مباشرة</td><td>تصادمات متسلسلة (تأين اصطدامي)</td><td>خلل بالتوازن الحراري</td></tr>
+    <tr><td>قابل للانعكاس؟</td><td>نعم ✅</td><td>نعم ✅</td><td>لا ❌</td></tr>
+    <tr><td>النتيجة</td><td>عودة طبيعية بعد قطع الجهد</td><td>عودة طبيعية بعد قطع الجهد</td><td>تلف دائم بالمادة</td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — المحاضرة 2 | إلكترونيات · د. ابراهيم الأحمد</div>
+</div>
+
+<!-- ================= TAB 2: CHEATSHEET ================= -->
+<div class="tab-panel" id="tab-cheat">
+<div class="section-hero"><h2 class="hero-title">📋 ورقة الغش</h2><p>معادلات وقواعد فقط — بدون شرح</p><span class="badge amber">Cheat Sheet</span></div>
+
+<h2>جهد الحاجز V₀</h2>
+<div class="card">
+  <table>
+    <tr><th>المادة</th><th>V₀</th></tr>
+    <tr><td>جرمانيوم Ge</td><td>0.3 – 0.4 V</td></tr>
+    <tr><td>سيليكون Si</td><td>0.6 – 0.7 V</td></tr>
+  </table>
+</div>
+
+<h2>شروط الانحياز</h2>
+<div class="card">
+  <table>
+    <tr><th>الانحياز الأمامي</th><th>الانحياز العكسي</th></tr>
+    <tr><td>(+) على p, (−) على n</td><td>(−) على p, (+) على n</td></tr>
+    <tr><td>V_BIAS > V_barrier</td><td>—</td></tr>
+    <tr><td>منطقة الاستنزاف تضيق/تختفي</td><td>منطقة الاستنزاف تتسع</td></tr>
+    <tr><td>يمر تيار (إلكتروني + ثقبي)</td><td>تيار أقلية صغير جداً I_R</td></tr>
+  </table>
+</div>
+
+<h2>نماذج الديود — المعادلات</h2>
+<div class="card">
+  <div class="formula-box">
+    <span class="formula-label">Ideal Model</span>
+    ON = short (0Ω) | OFF = open (∞)
+  </div>
+  <div class="formula-box">
+    <span class="formula-label">Practical Model — أمامي</span>
+    V_F = 0.7V<br>
+    I_F = (V_BIAS − 0.7) / R_LIMIT
+  </div>
+  <div class="formula-box">
+    <span class="formula-label">Complete Model — أمامي</span>
+    I_F = (V_BIAS − 0.7) / (R_LIMIT + r'd)<br>
+    V_F = 0.7 + I_F·r'd
+  </div>
+  <div class="formula-box">
+    <span class="formula-label">عام</span>
+    V_R = I_R · R_LIMIT (مقاومة)<br>
+    V_R = V_BIAS − V_RLIMIT
+  </div>
+</div>
+
+<h2>مقارنة نماذج الديود السريعة</h2>
+<div class="card">
+  <table>
+    <tr><th>النموذج</th><th>أمامي</th><th>عكسي</th></tr>
+    <tr><td>Ideal</td><td>Switch ON</td><td>Switch OFF</td></tr>
+    <tr><td>Practical</td><td>V_F=0.7V</td><td>OFF (I=0)</td></tr>
+    <tr><td>Complete</td><td>0.7V + r'd</td><td>I_R صغير + r'R كبيرة</td></tr>
+  </table>
+</div>
+
+<h2>أنواع الانهيار</h2>
+<div class="card">
+  <table>
+    <tr><th>النوع</th><th>الانعكاسية</th></tr>
+    <tr><td>Electrical – Field (حقلي)</td><td>✅ قابل للانعكاس</td></tr>
+    <tr><td>Electrical – Avalanche (تراكمي)</td><td>✅ قابل للانعكاس</td></tr>
+    <tr><td>Thermal (حراري)</td><td>❌ غير قابل للانعكاس (تلف دائم)</td></tr>
+  </table>
+</div>
+
+<h2>مصطلحات إنجليزي ↔ عربي سريعة</h2>
+<div class="card">
+  <table>
+    <tr><td class="en">PN Junction</td><td>وصلة PN</td></tr>
+    <tr><td class="en">Depletion Region</td><td>منطقة الاستنزاف/الحجب</td></tr>
+    <tr><td class="en">Barrier Potential</td><td>جهد الحاجز</td></tr>
+    <tr><td class="en">Anode / Cathode</td><td>الأنود (p) / الكاثود (n)</td></tr>
+    <tr><td class="en">Forward Bias</td><td>الانحياز الأمامي</td></tr>
+    <tr><td class="en">Reverse Bias</td><td>الانحياز العكسي</td></tr>
+    <tr><td class="en">Reverse Current I_R</td><td>التيار العكسي</td></tr>
+    <tr><td class="en">Breakdown Voltage V_BR</td><td>جهد الانهيار</td></tr>
+    <tr><td class="en">Avalanche Breakdown</td><td>الانهيار التراكمي/التكاثري</td></tr>
+    <tr><td class="en">Thermal Breakdown</td><td>الانهيار الحراري</td></tr>
+    <tr><td class="en">Ideal/Practical/Complete Model</td><td>النموذج المثالي/العملي/الكامل</td></tr>
+  </table>
+</div>
+
+<div class="footer">CTS Prep Series — Cheat Sheet المحاضرة 2</div>
+</div>
+
+<!-- ================= TAB 3: QUESTIONS ================= -->
+<div class="tab-panel" id="tab-questions">
+<div class="section-hero"><h2 class="hero-title">🧠 بنك الأسئلة</h2><p>اختيار من متعدد · أسئلة مفتوحة · محاكاة امتحان</p></div>
+
+<div class="mini-toc">
+  <a href="#mcq2">① اختيار من متعدد (15 سؤال)</a>
+  <a href="#open2">② أسئلة مفتوحة (10 أسئلة)</a>
+  <a href="#exam2">③ محاكاة امتحان</a>
+</div>
+
+<div class="section-title" id="mcq2">① اختيار من متعدد</div>
+
+<div class="q-card">
+  <span class="q-num">1.</span> منطقة p بالديود تسمى:
+  <ul class="options"><li>a) الكاثود</li><li>b) الأنود</li><li>c) القاعدة</li><li>d) المجمع</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) الأنود (Anode)</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">2.</span> جهد الحاجز التقريبي لمادة السيليكون هو:
+  <ul class="options"><li>a) 0.3V</li><li>b) 0.4V</li><li>c) 0.7V</li><li>d) 1.2V</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) 0.7V</span> (النطاق الدقيق: 0.6–0.7V)</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">3.</span> شروط تفعيل الانحياز الأمامي للديود:
+  <ul class="options">
+    <li>a) موجب على n، سالب على p</li>
+    <li>b) موجب على p، سالب على n، وV_BIAS > جهد الحاجز</li>
+    <li>c) أي قطبية تعمل</li>
+    <li>d) يجب أن يكون V_BIAS أقل من جهد الحاجز</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">4.</span> بالانحياز العكسي، منطقة الاستنزاف:
+  <ul class="options"><li>a) تختفي تماماً</li><li>b) تضيق</li><li>c) تتسع</li><li>d) لا تتأثر</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) تتسع</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">5.</span> التيار العكسي I_R ينتج عن حركة:
+  <ul class="options">
+    <li>a) حاملات الشحنة الأساسية (الأغلبية)</li>
+    <li>b) حاملات الشحنة الأقلية</li>
+    <li>c) البروتونات</li>
+    <li>d) الفوتونات</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) حاملات الأقلية</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">6.</span> في النموذج المثالي (Ideal Model)، الديود بالانحياز العكسي يُمثَّل كـ:
+  <ul class="options"><li>a) مفتاح مغلق (short)</li><li>b) مفتاح مفتوح (open)</li><li>c) مقاومة 0.7Ω</li><li>d) مصدر جهد</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) مفتاح مفتوح (OFF)</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">7.</span> أي نموذج ديود يأخذ بالحسبان المقاومة الديناميكية الأمامية r'd؟
+  <ul class="options"><li>a) Ideal</li><li>b) Practical</li><li>c) Complete</li><li>d) لا أحد منها</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) Complete Model</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">8.</span> في النموذج العملي (Practical)، جهد الديود بالانحياز الأمامي يُفترض ثابتاً عند:
+  <ul class="options"><li>a) 0V</li><li>b) 0.3V</li><li>c) 0.7V</li><li>d) يعتمد على التيار</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) 0.7V</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">9.</span> أي نوع من الانهيار غير قابل للانعكاس (يسبب تلف دائم)؟
+  <ul class="options"><li>a) الحقلي</li><li>b) التراكمي (Avalanche)</li><li>c) الحراري</li><li>d) كلها قابلة للانعكاس</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) الحراري (Thermal)</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">10.</span> الانهيار التراكمي (Avalanche) يحدث بسبب:
+  <ul class="options">
+    <li>a) ذوبان المادة حرارياً</li>
+    <li>b) تصادمات متسلسلة تولّد أزواج إلكترون-ثقب جديدة</li>
+    <li>c) نقص بجهد الحاجز</li>
+    <li>d) زيادة درجة حرارة الغرفة فقط</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">11.</span> عند تطبيق جهد أمامي مباشر كافٍ (> جهد الحاجز)، مقاومة الملتقى:
+  <ul class="options"><li>a) تزداد كثيراً</li><li>b) تصبح قريبة من الصفر</li><li>c) تبقى ثابتة</li><li>d) تصبح لانهائية</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">12.</span> جهد الانهيار يرمز له بـ:
+  <ul class="options"><li>a) V_F</li><li>b) V₀</li><li>c) V_BR</li><li>d) V_BIAS</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">c) V_BR</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">13.</span> بمنطقة p، حاملات الشحنة الأقلية هي:
+  <ul class="options"><li>a) ثقوب</li><li>b) إلكترونات</li><li>c) بروتونات</li><li>d) نيوترونات</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) إلكترونات</span></div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">14.</span> بالتركيب البلوري لتيار أمامي، أي تيار يمر فعلياً بالأسلاك التوصيلية الخارجية؟
+  <ul class="options"><li>a) تيار ثقبي فقط</li><li>b) تيار إلكتروني فقط</li><li>c) كلاهما معاً</li><li>d) لا يمر أي تيار</li></ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b) تيار إلكتروني فقط</span> — الثقوب موجودة فقط داخل التركيب البلوري لشبه الناقل.</div></details>
+</div>
+
+<div class="q-card">
+  <span class="q-num">15.</span> ما سبب الانهيار الحقلي (Field Breakdown)؟
+  <ul class="options">
+    <li>a) ارتفاع درجة الحرارة فقط</li>
+    <li>b) الحقل الكهربائي يكسر الروابط التساهمية مباشرة عند شدة عالية</li>
+    <li>c) نقص بمصدر الجهد</li>
+    <li>d) تآكل المادة مع الزمن</li>
+  </ul>
+  <details><summary>عرض الجواب</summary><div class="answer-box"><span class="correct">b</span></div></details>
+</div>
+
+<div class="section-title" id="open2">② أسئلة مفتوحة</div>
+
+<div class="q-card">
+  <p class="open-q"><b>1.</b> اشرح كيف تتشكل منطقة الاستنزاف عند تلامس مادتي p و n.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">عند تلامس المادتين، تنتشر الإلكترونات الحرة القريبة من الوصلة بمنطقة n إلى منطقة p وتتحد مع الثقوب، وبالمقابل تنتشر الثقوب من p إلى n. هذا التبادل يخلق طبقة شحنات موجبة (بجانب n) وسالبة (بجانب p) قرب التقاطع، تُعرف بمنطقة الاستنزاف، وهي خالية من حاملات الشحنة الحرة.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>2.</b> ما الفرق بين التيار الإلكتروني والتيار الثقبي بالانحياز الأمامي، وأين يوجد كل منهما؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">التيار الثقبي يحدث داخل منطقة p (وأيضاً عبر الملتقى) نتيجة انتقال إلكترونات التكافؤ من ثقب لآخر. التيار الإلكتروني يحدث بمنطقة n وبالأسلاك التوصيلية الخارجية. بالأسلاك الخارجية يتحرك الإلكترونات فقط، بينما عبر الملتقى نفسه يمر التياران معاً (إلكتروني وثقبي).</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>3.</b> عدد شروط تفعيل الانحياز الأمامي للديود واشرح دور كل شرط.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  الشرط الأول: تطبيق قطبية صحيحة (موجب على p، سالب على n) للسماح بمرور التيار عبر الوصلة.<br>
+  الشرط الثاني: يجب أن يكون جهد الانحياز الخارجي V_BIAS أكبر من جهد الحاجز/الفتح، وإلا لن يتغلب على الحاجز الجهدي ولن يمر تيار فعلي.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>4.</b> قارن بين النماذج الثلاثة للديود (Ideal, Practical, Complete) من حيث الدقة وما تأخذه بالحسبان.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">
+  Ideal: أقل دقة، يمثل الديود كمفتاح فقط (ON/OFF) بدون أي جهد حاجز أو مقاومة.<br>
+  Practical: يضيف جهد الحاجز الثابت (0.7V للسيليكون) بالانحياز الأمامي، ويبقى مفتاحاً مفتوحاً بالعكسي.<br>
+  Complete: الأكثر دقة، يضيف أيضاً المقاومة الديناميكية الأمامية الصغيرة r'd والمقاومة الداخلية العكسية الكبيرة r'R.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>5.</b> اشرح آلية الانهيار التراكمي (Avalanche) خطوة بخطوة.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">مع زيادة الجهد العكسي، تكتسب حاملات الشحنة (كإلكترون منتقل من n إلى P) طاقة حركية كافية لتصادم ذرات المادة الأصلية وتحطيم روابطها التساهمية، مولّدة زوج إلكترون-ثقب جديد. الإلكترون الجديد يكتسب بدوره طاقة حركية ويحطم ذرة أخرى، وهكذا تتكرر العملية تسلسلياً (تكاثر)، مما يزيد عدد حاملات الشحنة والتيار العكسي بسرعة.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>6.</b> لماذا يُعتبر الانهيار الحراري أخطر من الانهيار الكهربائي (الحقلي والتراكمي)؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">لأن الانهيار الكهربائي (حقلي وتراكمي) قابل للانعكاس؛ عند قطع الجهد العكسي يعود الديود لحالته الطبيعية دون تلف. أما الانهيار الحراري فغير قابل للانعكاس ويسبب تحطم فعلي (حرق) للمادة شبه الناقلة بشكل دائم، بسبب خلل استقرار النظام الحراري حيث تتراكم الحرارة أسرع من تبددها.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>7.</b> ما معنى مصطلح "الاستنزاف/الحجب" في سياق وصلة PN؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">يشير المصطلح لحقيقة أن المنطقة القريبة من تقاطع pn أصبحت مستنفدة (خالية) من حاملات الشحنة الحرة (إلكترونات وثقوب)، بسبب الانتشار عبر الوصلة الذي أدى لإعادة تركيب الحاملات القريبة من التقاطع.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>8.</b> احسب التيار الأمامي I_F باستخدام النموذج العملي إذا كان V_BIAS=10V وR_LIMIT=1kΩ.</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">I_F = (V_BIAS − 0.7V) / R_LIMIT = (10 − 0.7) / 1000 = 9.3mA</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>9.</b> ما الفرق بين الانهيار الحقلي والانهيار التراكمي رغم أن كليهما "كهربائي"؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">الانهيار الحقلي: الحقل الكهربائي نفسه (عند شدة عالية جداً) يكسر الروابط التساهمية مباشرة دون الحاجة لتصادمات متسلسلة. الانهيار التراكمي: يعتمد على تصادمات متتالية (تأين اصطدامي) بين حاملات شحنة مسرَّعة وذرات المادة، بحيث يولّد كل تصادم حاملات جديدة تتكاثر بشكل تسلسلي.</div></details>
+</div>
+
+<div class="q-card">
+  <p class="open-q"><b>10.</b> لماذا لا تكون خاصية V-I للديود خطية بالبداية، وتصبح خطية تقريباً بعد جهد الفتح؟</p>
+  <details><summary>عرض نموذج الجواب</summary><div class="answer-box">بالبداية، مقاومة الطبقة الحاجزة (منطقة الاستنزاف) تتناقص تدريجياً مع زيادة الجهد الأمامي، مما يعطي سلوكاً غير خطي. بعد الوصول لجهد الفتح، تختفي عملياً مقاومة الطبقة الحاجزة، ويبقى فقط تأثير المقاومة الحجمية الثابتة تقريباً لمنطقتي p وn، فتصبح العلاقة بين الجهد والتيار خطية تقريباً.</div></details>
+</div>
+
+<div class="section-title" id="exam2">③ محاكاة امتحان</div>
+<div class="q-card">
+  <span class="exam-badge">⏱ محاكاة — 25 دقيقة</span>
+  <p style="font-size:.9rem; color:var(--muted)">أجب بدون فتح الملخص. راجع الأجوبة بالنهاية فقط.</p>
+
+  <p class="open-q"><b>س1 (4 علامات):</b> عرّف: جهد الحاجز، منطقة الاستنزاف، الأنود، الكاثود.</p>
+  <p class="open-q"><b>س2 (4 علامات):</b> اشرح بالتفصيل ما يحدث لمنطقة الاستنزاف عند تطبيق انحياز أمامي مقابل انحياز عكسي.</p>
+  <p class="open-q"><b>س3 (3 علامات):</b> اذكر شرطين ضروريين لتفعيل الانحياز الأمامي للديود.</p>
+  <p class="open-q"><b>س4 (4 علامات):</b> حل: إذا كان V_BIAS=10V (أمامي)، R_LIMIT=1kΩ، r'd=10Ω، احسب I_F وV_F باستخدام النموذج الكامل (Complete Model).</p>
+  <p class="open-q"><b>س5 (4 علامات):</b> قارن بين أنواع الانهيار الثلاثة (حقلي، تراكمي، حراري) من حيث السبب والانعكاسية.</p>
+  <p class="open-q"><b>س6 (3 علامات):</b> لماذا يمر بالأسلاك التوصيلية الخارجية تيار إلكتروني فقط رغم وجود تيار ثقبي داخل الملتقى؟</p>
+  <p class="open-q"><b>س7 (3 علامات):</b> ما القيمة التقريبية لجهد الحاجز V₀ في كل من السيليكون والجرمانيوم؟</p>
+
+  <details><summary>📖 عرض نموذج الحل الكامل</summary>
+  <div class="answer-box">
+  <b>س1:</b> جهد الحاجز: فرق الجهد الناشئ على جانبي وصلة pn نتيجة تراكم الشحنات بمنطقة الاستنزاف. منطقة الاستنزاف: المنطقة القريبة من الوصلة الخالية من حاملات الشحنة الحرة. الأنود: طرف منطقة p المتصل بقطب التوصيل. الكاثود: طرف منطقة n المتصل بقطب التوصيل.<br><br>
+  <b>س2:</b> بالانحياز الأمامي: منطقة الاستنزاف تضيق وقد يختفي الحاجز الجهدي تماماً إذا كان الجهد كافياً، فتصبح مقاومة الملتقى قريبة من الصفر ويمر التيار بحرية. بالانحياز العكسي: تتسع منطقة الاستنزاف لأن حاملات الشحنة الأساسية تُسحب بعيداً عن الوصلة، وتزداد المقاومة العكسية، فيتوقف التيار الأساسي تقريباً (يبقى فقط تيار أقلية صغير جداً).<br><br>
+  <b>س3:</b> (1) قطبية صحيحة: موجب على p وسالب على n. (2) V_BIAS أكبر من جهد الحاجز/الفتح.<br><br>
+  <b>س4:</b> I_F = (10−0.7)/(1000+10) = 9.3/1010 ≈ 9.21mA<br>
+  V_F = 0.7 + (9.21mA)(10Ω) = 0.7 + 0.0921 = 0.792V ≈ 792mV<br><br>
+  <b>س5:</b> الحقلي: الحقل الكهربائي يكسر الروابط مباشرة، قابل للانعكاس. التراكمي: تصادمات متسلسلة (تأين اصطدامي) تولّد حاملات جديدة، قابل للانعكاس. الحراري: خلل بالتوازن الحراري يؤدي لتراكم حرارة أكبر من المُبدَّد، غير قابل للانعكاس (تلف دائم للمادة).<br><br>
+  <b>س6:</b> لأن الثقوب هي فراغات ضمن التركيب البلوري لشبه الناقل ولا يمكنها الوجود أو الانتقال خارج البلورة (بالسلك المعدني)؛ فقط الإلكترونات الحقيقية يمكنها التحرك بالموصلات المعدنية الخارجية، حيث تصبح إلكترونات توصيل عادية بالمعدن.<br><br>
+  <b>س7:</b> السيليكون: 0.6–0.7V. الجرمانيوم: 0.3–0.4V.
+  </div></details>
+</div>
+
+<div class="footer">CTS Prep Series — بنك أسئلة المحاضرة 2</div>
+</div>
+
+<!-- ================= TAB 4: FLASHCARDS ================= -->
+<div class="tab-panel" id="tab-flash">
+<div class="section-hero"><h2 class="hero-title">⚡ بطاقات المراجعة</h2><p>اضغط البطاقة لقلبها وعرض الجواب</p></div>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+<div class="counter" id="counter">1 / 20</div>
+
+<div class="flashcard-wrap">
+  <div class="flashcard" id="flashcard" onclick="flipCard()">
+    <div class="face front">
+      <div class="q-label">سؤال</div>
+      <div class="q-text" id="qText"></div>
+      <div class="tap-hint">👆 اضغط لعرض الجواب</div>
+    </div>
+    <div class="face back">
+      <div class="a-label">جواب</div>
+      <div class="a-text" id="aText"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fc-controls">
+  <button class="btn btn-prev" onclick="prevCard()">◀ السابق</button>
+  <button class="btn btn-shuffle" onclick="shuffleCards()">🔀</button>
+  <button class="btn btn-next" onclick="nextCard()">التالي ▶</button>
+</div>
+</div>
+
+<div class="footer">CTS Prep Series — المحاضرة 2 (موحدة) | إلكترونيات</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+const cards = [
+  {q:"ما اسم منطقة p بالديود؟ وما رمزها؟", a:"الأنود (Anode) — يرمز له بالحرف A."},
+  {q:"ما اسم منطقة n بالديود؟ وما رمزها؟", a:"الكاثود (Cathode) — يرمز له بالحرف K."},
+  {q:"ما هي منطقة الاستنزاف؟", a:"المنطقة القريبة من وصلة pn الخالية من حاملات الشحنة الحرة، ناتجة عن انتشار وإعادة تركيب الإلكترونات والثقوب القريبة من التقاطع."},
+  {q:"ما جهد الحاجز التقريبي للسيليكون؟", a:"0.6 – 0.7 فولت."},
+  {q:"ما جهد الحاجز التقريبي للجرمانيوم؟", a:"0.3 – 0.4 فولت."},
+  {q:"ما شرطا تفعيل الانحياز الأمامي؟", a:"(1) موجب على p وسالب على n. (2) V_BIAS أكبر من جهد الحاجز."},
+  {q:"ماذا يحدث لمنطقة الاستنزاف بالانحياز الأمامي الكافي؟", a:"تضيق ويمكن أن يختفي الحاجز الجهدي تماماً، فتصبح مقاومة الملتقى قريبة من الصفر."},
+  {q:"ماذا يحدث لمنطقة الاستنزاف بالانحياز العكسي؟", a:"تتسع، لأن حاملات الشحنة الأساسية تُسحب بعيداً عن الوصلة."},
+  {q:"ما مصدر التيار العكسي I_R؟", a:"حاملات الشحنة الأقلية (إلكترونات بمنطقة p، ثقوب بمنطقة n)."},
+  {q:"صف النموذج المثالي (Ideal) للديود.", a:"انحياز أمامي = مفتاح مغلق (short/ON). انحياز عكسي = مفتاح مفتوح (open/OFF). لا يأخذ بالحسبان أي جهد حاجز."},
+  {q:"صف النموذج العملي (Practical) للديود.", a:"انحياز أمامي: يُمثَّل بمصدر جهد ثابت V_F=0.7V. انحياز عكسي: مفتاح مفتوح تماماً كالنموذج المثالي."},
+  {q:"صف النموذج الكامل (Complete) للديود.", a:"الأكثر دقة: يضيف مقاومة ديناميكية أمامية صغيرة r'd، ومقاومة داخلية عكسية كبيرة r'R، بالإضافة لجهد الحاجز 0.7V."},
+  {q:"ما معادلة التيار الأمامي بالنموذج العملي؟", a:"I_F = (V_BIAS − 0.7V) / R_LIMIT"},
+  {q:"ما معادلة التيار الأمامي بالنموذج الكامل؟", a:"I_F = (V_BIAS − 0.7V) / (R_LIMIT + r'd)"},
+  {q:"ما هو جهد الانهيار V_BR؟", a:"الجهد العكسي الحدي الذي عنده يبدأ التيار العكسي بالازدياد بسرعة كبيرة."},
+  {q:"عدد نوعي الانهيار الكهربائي.", a:"الانهيار الحقلي (Field) والانهيار التراكمي/التكاثري (Avalanche)."},
+  {q:"ما سبب الانهيار الحقلي؟", a:"الحقل الكهربائي عند شدة عالية يكسر الروابط التساهمية مباشرة بمنطقة الاستنزاف."},
+  {q:"ما سبب الانهيار التراكمي (Avalanche)؟", a:"تصادمات متسلسلة (تأين اصطدامي): إلكترون مسرَّع يحطم ذرة مولّداً زوج إلكترون-ثقب جديد، يتكاثر بسرعة."},
+  {q:"لماذا الانهيار الحراري خطير وغير قابل للانعكاس؟", a:"لأنه يسبب تحطم فعلي (حرق) دائم للمادة شبه الناقلة بسبب تراكم حرارة أكبر من المُبدَّدة، ولا يعود الديود لحالته الطبيعية."},
+  {q:"أي نوعي انهيار قابلان للانعكاس؟", a:"الانهيار الحقلي والانهيار التراكمي (كلاهما كهربائي) — يعود الديود لطبيعته بعد قطع الجهد العكسي."}
+];
+
+let currentIndex = 0;
+let isFlipped = false;
+
+function renderCard(){
+  document.getElementById('qText').textContent = cards[currentIndex].q;
+  document.getElementById('aText').textContent = cards[currentIndex].a;
+  document.getElementById('counter').textContent = (currentIndex+1) + ' / ' + cards.length;
+  document.getElementById('progressFill').style.width = ((currentIndex+1)/cards.length*100) + '%';
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+  isFlipped = false;
+}
+
+function flipCard(){
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard(){
+  currentIndex = (currentIndex + 1) % cards.length;
+  renderCard();
+}
+
+function prevCard(){
+  currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+  renderCard();
+}
+
+function shuffleCards(){
+  for(let i = cards.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  currentIndex = 0;
+  renderCard();
+}
+
+renderCard();
+</script>
+
+</body>
+</html>
